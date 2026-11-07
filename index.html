@@ -134,7 +134,7 @@ function sim(g){
  slots.forEach(s=>{if(s.gst&&s.gst.st=='stay'&&day>=s.leave){const q=s.gst;q.st='out';q.p=q.p.slice().reverse();q.i=1;q.m.position.copy(q.p[0]);q.m.rotation.x=0;q.m.visible=true}});
 }
 function arrive(q){const s=q.s;if(Math.random()<.07*(wx==2?1.8:1)){const f=Math.round(price(s)*.3);LG.rev+=f;money+=f;toast('📵 直前キャンセル キャンセル料 ¥'+fmt(f));q.st='out';q.p=q.p.slice().reverse();q.i=1;s.nt=0;return}q.st='stay';q.at=0;q.act='';s.leave=Math.floor(day)+s.nt+11/24+Math.random()*.08;const pr=Math.round(price(s)*s.nt);LG.rev+=pr;totRev+=pr;LG.nights=(LG.nights||0)+s.nt;money+=pr;
- const sat=Math.max(0,Math.min(1,.45+.13*(s.type-1)+.1*(s.lvl-1)+(1-mult)*.5+((s.cond==null?1:s.cond)-1)*.35-Math.max(0,occ()/(1+S.clean*3)-3)*.04+S.clean*.03+F.rest*.07+F.pool*.07+fxS()+(Math.random()-.5)*.3));const fr=F.rest*800+F.pool*500+fxR();LG.rev+=fr;money+=fr;rating=rating*.9+(1+4*sat)*.1;if(Math.random()<.18)review(sat);cheer(q,pr+fr,sat)}
+ const sat=Math.max(0,Math.min(1,.45+.13*(s.type-1)+.1*(s.lvl-1)+(1-mult)*.5+((s.cond==null?1:s.cond)-1)*.35-Math.max(0,occ()/(1+S.clean*3)-3)*.04+S.clean*.03+trn*.02+F.rest*.07+F.pool*.07+fxS()+(Math.random()-.5)*.3));const fr=F.rest*800+F.pool*500+fxR();LG.rev+=fr;money+=fr;rating=rating*.9+(1+4*sat)*.1;if(Math.random()<.18)review(sat);cheer(q,pr+fr,sat)}
 function walk(g){for(let k=guests.length-1;k>=0;k--){const q=guests[k];if(q.st=='stay'){life(q,g);continue}
  const tg=q.p[q.i],d=tg.clone().sub(q.m.position),L=d.length(),st=2.3*g;
  if(L<=st){q.m.position.copy(tg);q.i++;if(q.i>=q.p.length){if(q.st=='in')arrive(q);else{scene.remove(q.m);q.s.rsv=false;q.s.gst=null;q.s.rdy=day+.3/(1+S.clean*.6);guests.splice(k,1)}}}
@@ -206,8 +206,8 @@ function adScreen(){const list=Object.keys(ads).filter(k=>ads[k]>0);if(!list.len
  const x=adc.getContext('2d');x.fillStyle=list.includes('tv')?'#8a1020':'#14161e';x.fillRect(0,0,512,256);x.fillStyle='#e8c070';x.textAlign='center';x.font='bold 54px sans-serif';
  x.fillText(list.length?(list.includes('tv')?'📺 TV CM 放映中':'📢 '+AD[list[0]].n):'',256,110);x.font='36px sans-serif';x.fillText('GRAND HOTEL 好評予約受付中',256,190);adt.needsUpdate=true}
 const ACH=[[()=>built()>=8,'8室オープン',20000],[()=>built()>=16,'16室オープン',50000],[()=>rating>=4.5,'評価4.5達成',50000],[()=>worth()>=1e6,'純資産100万円',50000],[()=>worth()>=5e6,'純資産500万円',150000],[()=>F.rest&&F.pool&&F.park,'複合リゾート完成',50000],[()=>brand>=50,'知名度50',30000]];
-const SEG=[{n:'ビジネス',w:.4,bud:9000,n2:[1,2],pref:1},{n:'観光',w:.35,bud:14000,n2:[1,3],pref:2},{n:'ファミリー',w:.15,bud:20000,n2:[2,3],pref:2},{n:'VIP',w:.1,bud:60000,n2:[1,2],pref:3}];
-function pickSeg(){let r=Math.random();for(const s of SEG)if((r-=s.w)<0)return s;return SEG[0]}
+const SEG=[{n:'ビジネス',w:.4,bud:9000,n2:[1,2],pref:1},{n:'観光',w:.35,bud:14000,n2:[1,3],pref:2},{n:'ファミリー',w:.15,bud:20000,n2:[2,3],pref:2},{n:'VIP',w:.1,bud:60000,n2:[1,2],pref:3},{n:'インバウンド',w:.2,bud:18000,n2:[2,4],pref:2}];
+function pickSeg(){const w=SEG.map(s=>s.n=='インバウンド'?s.w*FX:s.w),t=w.reduce((a,b)=>a+b,0);let r=Math.random()*t;for(let i=0;i<SEG.length;i++)if((r-=w[i])<0)return SEG[i];return SEG[0]}
 const hw=()=>{const h=(day%1)*24;return(h<6?.1:h<15?.5:h<22?1.8:.4)*1.3},occ=()=>slots.filter(s=>s.rsv).length;
 const FD={spa:{n:'♨ 大浴場・スパ',d:'満足度+・集客+・宿泊売上',c:180000,sat:.06,dem:.12,rev:600,up:1800},
  gym:{n:'🏋 ジム',d:'ビジネス客に人気',c:70000,sat:.03,dem:.06,rev:0,up:600},
@@ -224,7 +224,7 @@ const FD={spa:{n:'♨ 大浴場・スパ',d:'満足度+・集客+・宿泊売上
  cafe:{n:'☕ カフェ',d:'宿泊ごと売上',c:80000,sat:.02,dem:.03,rev:350,up:700}};
 Object.keys(FD).forEach(k=>{F[k]=0;FC[k]=FD[k].c});
 const sumF=p=>Object.keys(FD).reduce((a,k)=>a+(F[k]?FD[k][p]:0),0),fxS=()=>sumF('sat'),fxD=()=>sumF('dem'),fxR=()=>sumF('rev'),fxU=()=>sumF('up');
-function specials(di){if(F.chapel&&Math.random()<.2){const b=90000+(Math.random()*110000|0);money+=b;LG.rev+=b;toast('💒 結婚式の披露宴 +¥'+fmt(b))}
+function specials(di){if(Math.random()<.01){const f=ins?20000:150000;money-=f;LG.evt+=f;toast('🌋 地震発生 損害 ¥'+fmt(f)+(ins?'（保険適用）':''))}if(occ()>6&&Math.random()<.04){money-=30000;LG.evt+=30000;toast('🔊 近隣から騒音苦情 対応費 ¥30,000')}if(F.chapel&&Math.random()<.2){const b=90000+(Math.random()*110000|0);money+=b;LG.rev+=b;toast('💒 結婚式の披露宴 +¥'+fmt(b))}
  if(F.conf&&di%7<5&&Math.random()<.4){const b=40000+(Math.random()*50000|0);money+=b;LG.rev+=b;toast('📊 会議・研修 +¥'+fmt(b))}}
 function mkFac(k,g){const wt=M(0x6ac3d8,.1,.2,{transparent:true,opacity:.8,emissive:0x0a4a5a,emissiveIntensity:.4,depthWrite:false});
  if(k=='bus'){busM=new T.Group();box(7,1.8,2.2,M(0x2a7fd4,.4,.3),0,1.4,0,busM);box(6.4,.7,2.25,M(0x1a2230,.2,.4),0,1.8,0,busM);[[-2.2,1],[2.2,1],[-2.2,-1],[2.2,-1]].forEach(p=>{const w=new T.Mesh(new T.CylinderGeometry(.45,.45,.3,14),M(0x111111));w.rotation.x=Math.PI/2;w.position.set(p[0],.45,p[1]);busM.add(w)});busM.position.set(10,0,17.7);scene.add(busM);return}
@@ -293,6 +293,7 @@ const PL=[-17,17,-34,34,-51,51].map(x=>({x,own:0,an:null,pad:null})),landPrice=p
 function markLand(p){if(p.pad)scene.remove(p.pad);const g=p.pad=new T.Group();scene.add(g);const m=new T.Mesh(new T.PlaneGeometry(14,10),M(p.own?0xb9b4a6:0x6f9a4f,.95));m.rotation.x=-Math.PI/2;m.position.set(p.x,.035,0);m.receiveShadow=true;g.add(m);
  if(!p.own){const c=document.createElement('canvas');c.width=256;c.height=96;const x=c.getContext('2d');x.fillStyle='#c0392b';x.fillRect(0,0,256,96);x.fillStyle='#fff';x.font='bold 40px sans-serif';x.textAlign='center';x.textBaseline='middle';x.fillText('FOR SALE',128,48);
   const tx=new T.CanvasTexture(c);tx.encoding=T.sRGBEncoding;const s=new T.Mesh(new T.PlaneGeometry(2.6,.98),new T.MeshBasicMaterial({map:tx}));s.position.set(p.x,1.6,4.6);g.add(s);box(.12,1.6,.12,wood,p.x-1,.8,4.55,g);box(.12,1.6,.12,wood,p.x+1,.8,4.55,g)}}
+function spark(){if(!hist.length)return'–';const mx=Math.max(...hist.map(Math.abs),1);return hist.map(v=>v<0?'▾':'▁▂▃▄▅▆▇█'[Math.min(7,Math.floor(v/mx*7.99))]).join('')}
 function landMenu(){const e=$('sheet');e.style.display='block';
  e.innerHTML='<h3>土地・別館　地価指数 '+landIdx.toFixed(2)+'</h3><div class="r">'+PL.map((p,i)=>{const nm=(p.x<0?'左':'右')+(Math.abs(p.x)/17)+'区画',inn=PL.find(q=>q.x==p.x-Math.sign(p.x)*17);
   if(!p.own)return (!inn||inn.an)?'<button data-lb="'+i+'">'+nm+' 土地購入 ¥'+fmt(landPrice(p))+'</button>':'<button disabled>'+nm+'（内側の区画に別館建設後に購入可）</button>';
@@ -303,9 +304,9 @@ function landMenu(){const e=$('sheet');e.style.display='block';
   if(d.ls!==undefined){const p=PL[d.ls];money+=Math.round(landPrice(p)*.8);p.own=0;markLand(p);toast('💴 土地を売却')}
   if(d.la!==undefined){const p=PL[d.la],c=p.an?60000*(p.an.nF+1):400000;if(p.an&&p.an.nF>=6)return toast('上限です');if(money<c)return toast('資金不足');money-=c;if(!p.an)buildAn(p);addAn(p);toast('🏨 別館が完成!');confetti();beep(659,.2)}
   landMenu();hud()}}
-let RV=1,busM=null,aS=null,landIdx=1,BRoff=0,combo=0,totRev=0,lvl=0;const lvlOf=t=>Math.floor(Math.sqrt(t/60000));const INF=()=>1+.03*((day/40)|0);
+let RV=1,busM=null,aS=null,landIdx=1,BRoff=0,FX=1,trn=0,overdue=0,hist=[],combo=0,totRev=0,lvl=0;const lvlOf=t=>Math.floor(Math.sqrt(t/60000));const INF=()=>1+.03*((day/40)|0);
 function review(s){const t=s>.8?['最高の滞在でした','スタッフが親切で感動','また泊まりたい']:s>.5?['まずまず快適','立地が良い','清潔でした']:['料金が高すぎる','部屋が古い','サービスが残念'];toast('💬 '+'★'.repeat(Math.round(1+4*s))+' 「'+rnd(t)+'」')}
-function daily2(di){landIdx=Math.max(.6,Math.min(2.2,landIdx*(1+(Math.random()-.48)*.03)));BRoff=Math.max(-.02,Math.min(.04,BRoff+(Math.random()-.5)*.004));specials(di);if(di%40==30)toast('🎌 大型連休スタート! 集客×1.4');RV=Math.max(.8,Math.min(1.35,RV+(Math.random()-.5)*.1));['clean','conc'].forEach(k=>{if(S[k]&&Math.random()<.02+(occ()>S[k]*6?.03:0)){S[k]--;const i=sMesh.map(m=>m.userData.k).lastIndexOf(k);if(i>=0){scene.remove(sMesh[i]);sMesh.splice(i,1)}toast('👋 '+(k=='clean'?'清掃スタッフ':'コンシェルジュ')+'が退職しました')}});slots.forEach(s=>{if(s.type&&s.cond!=null)s.cond=Math.min(1,s.cond+.01*S.clean)});for(const k in ads)if(ads[k]>0&&!--ads[k])toast('📢 '+AD[k].n+'終了');brand=Math.max(0,brand-.6);
+function daily2(di){FX=Math.max(.6,Math.min(1.6,FX+(Math.random()-.5)*.06));landIdx=Math.max(.6,Math.min(2.2,landIdx*(1+(Math.random()-.48)*.03)));BRoff=Math.max(-.02,Math.min(.04,BRoff+(Math.random()-.5)*.004));specials(di);if(di%40==30)toast('🎌 大型連休スタート! 集客×1.4');RV=Math.max(.8,Math.min(1.35,RV+(Math.random()-.5)*.1));['clean','conc'].forEach(k=>{if(S[k]&&Math.random()<(.02+(occ()>S[k]*6?.03:0))*(1-.25*trn)){S[k]--;const i=sMesh.map(m=>m.userData.k).lastIndexOf(k);if(i>=0){scene.remove(sMesh[i]);sMesh.splice(i,1)}toast('👋 '+(k=='clean'?'清掃スタッフ':'コンシェルジュ')+'が退職しました')}});slots.forEach(s=>{if(s.type&&s.cond!=null)s.cond=Math.min(1,s.cond+.01*S.clean)});for(const k in ads)if(ads[k]>0&&!--ads[k])toast('📢 '+AD[k].n+'終了');brand=Math.max(0,brand-.6);
  const r=Math.random();wx=r<.7?0:r<.9?1:2;season=((di/20)|0)%4;
  gnd.material.color.setHex([0x6aa04a,0x5d8a45,0x8a7a45,0xe8eef2][season]);green.color.setHex([0x6fbf5a,0x3f7a3a,0xc0742a,0x9aa89a][season]);adScreen();
  ACH.forEach((a,i)=>{if(!ach[i]&&a[0]()){ach[i]=1;money+=a[2];toast('🏆 実績「'+a[1]+'」 +¥'+fmt(a[2]))}})}
@@ -328,12 +329,13 @@ function settle(){
  prof=LG.rev-ct-oc-LG.exp-LG.evt-it-pt-ip,tx=Math.max(0,Math.round(prof*.25)),rep=Math.min(debt,Math.round(debt*.1/1000)*1000);
  money-=ct+oc+it+pt+tx+ip+rep;debt-=rep;LG.int+=it;LG.tax=pt+tx;LG.ins=ip;LG.ct=ct;LG.oc=oc;
  if(money<0){const od=Math.round(-money*.1);money-=od;LG.int+=od}
- LP=Object.assign({},LG,{prof:prof-tx,rep});LG={rev:0,exp:0,int:0,tax:0,ins:0,evt:0};
+ LP=Object.assign({},LG,{prof:prof-tx,rep});hist.push(Math.round(prof-tx));if(hist.length>12)hist.shift();overdue=money<0?overdue+1:0;
+ if(overdue>=2){const p=PL.find(q=>q.own&&!q.an);if(p){const v=Math.round(landPrice(p)*.8);money+=v;p.own=0;markLand(p);toast('🏦 延滞により銀行が土地を差押え（¥'+fmt(v)+'で換金）')}else if(overdue>=3){spd=0;toast('💥 破産しました… 再読み込みでやり直し')}}LG={rev:0,exp:0,int:0,tax:0,ins:0,evt:0};
  toast('📊 決算 純利益 ¥'+fmt(prof-tx)+'（税 ¥'+fmt(pt+tx)+'）')}
 function finance(){const e=$('sheet');e.style.display='block';const L=LP,y=v=>'¥'+fmt(v),n=10-((day|0)%10);
  const row=(a,b)=>'<div style="display:flex;justify-content:space-between"><span>'+a+'</span><b>'+b+'</b></div>';
- e.innerHTML='<h3>経理・銀行</h3>'+row('純資産',y(worth()))+row('現金',y(money))+row('資産（簿価）',y(assets()))+row('借入残高',y(debt))+row('金利／決算',(rate()*100).toFixed(1)+'%')+row('信用格付',grade())+row('追加借入可能額',y(limit()))+row('競合ホテル相場',RV.toFixed(2)+'（自社 '+mult.toFixed(1)+'）')+row('物価指数',INF().toFixed(2))+row('次の決算まで',n+'日')+
- '<h3 style="margin-top:10px">前期決算</h3>'+(L?row('売上',y(L.rev))+row('経費・人件費',y(L.exp))+row('損害',y(L.evt))+row('利息',y(L.int))+row('税金（固定資産税・法人税）',y(L.tax))+row('保険料',y(L.ins))+row('消費税・OTA手数料',y((L.ct||0)+(L.oc||0)))+row('稼働率',Math.round(100*(L.nights||0)/(L.av||1))+'%')+row('ADR／RevPAR',y((L.rev||0)/(L.nights||1))+' / '+y((L.rev||0)/(L.av||1)))+row('純利益',y(L.prof))+row('元本返済(10%)',y(L.rep)):'<small>まだ決算がありません（10日ごと）</small>')+
+ e.innerHTML='<h3>経理・銀行</h3>'+row('純資産',y(worth()))+row('現金',y(money))+row('資産（簿価）',y(assets()))+row('借入残高',y(debt))+row('金利／決算',(rate()*100).toFixed(1)+'%')+row('信用格付',grade())+row('追加借入可能額',y(limit()))+row('為替（円安指数）',FX.toFixed(2))+row('地価指数',landIdx.toFixed(2))+row('競合ホテル相場',RV.toFixed(2)+'（自社 '+mult.toFixed(1)+'）')+row('物価指数',INF().toFixed(2))+row('次の決算まで',n+'日')+
+ '<div style="font-size:20px;letter-spacing:2px;margin-top:8px">利益推移 '+spark()+'</div><h3 style="margin-top:10px">前期決算</h3>'+(L?row('売上',y(L.rev))+row('経費・人件費',y(L.exp))+row('損害',y(L.evt))+row('利息',y(L.int))+row('税金（固定資産税・法人税）',y(L.tax))+row('保険料',y(L.ins))+row('消費税・OTA手数料',y((L.ct||0)+(L.oc||0)))+row('稼働率',Math.round(100*(L.nights||0)/(L.av||1))+'%')+row('ADR／RevPAR',y((L.rev||0)/(L.nights||1))+' / '+y((L.rev||0)/(L.av||1)))+row('純利益',y(L.prof))+row('元本返済(10%)',y(L.rep)):'<small>まだ決算がありません（10日ごと）</small>')+
  '<div class="r" style="margin-top:8px"><button data-l>借りる ¥100,000</button><button data-r>返済 ¥100,000</button><button data-i>火災・事故保険：'+(ins?'加入中（タップで解約）':'未加入（¥6,000/決算）')+'</button><button data-c>閉じる</button></div>';
  e.onclick=q=>{const b=q.target.closest('button');if(!b)return;const d=b.dataset;
   if(d.c!==undefined){e.style.display='none';return}
@@ -355,18 +357,19 @@ function staffMesh(k){const m=mkGuest();m.children[0].material=M(k=='clean'?0x2f
 function menu(){const e=$('sheet');e.style.display='block';
  const fb=(k,n)=>'<button data-f="'+k+'">'+n+(F[k]?'　✔ 営業中':'　建設費 ¥'+fmt(FC[k]))+'</button>';
  const sb=(k,n,d)=>'<button data-h="'+k+'">'+n+'　'+S[k]+'人（雇用 ¥10,000／日給 ¥2,500）<br><small>'+d+'</small></button>';
- e.innerHTML='<h3>施設</h3><div class="r">'+'<small>屋内施設（レストラン・スパ等）は空き区画をタップして建設</small>'+fb('park','🅿 駐車場（車で来る客を受け入れ・16台）')+fb('pool','🏊 プール（満足度+／集客+）')+Object.keys(FD).filter(k=>!IN[k]).map(k=>fb(k,FD[k].n+'（'+FD[k].d+'）')).join('')+'</div><h3 style="margin-top:10px">スタッフ</h3><div class="r">'+sb('clean','清掃スタッフ','満足度アップ（最大5人）')+sb('conc','コンシェルジュ','集客アップ（最大3人）')+'</div><div class="r" style="margin-top:8px"><button data-c>閉じる</button><button data-z>最初からやり直す</button></div>';
+ e.innerHTML='<h3>施設</h3><div class="r">'+'<small>屋内施設（レストラン・スパ等）は空き区画をタップして建設</small>'+fb('park','🅿 駐車場（車で来る客を受け入れ・16台）')+fb('pool','🏊 プール（満足度+／集客+）')+Object.keys(FD).filter(k=>!IN[k]).map(k=>fb(k,FD[k].n+'（'+FD[k].d+'）')).join('')+'</div><h3 style="margin-top:10px">スタッフ</h3><div class="r">'+sb('clean','清掃スタッフ','満足度アップ（最大5人）')+sb('conc','コンシェルジュ','集客アップ（最大3人）')+'<button data-tr>🎓 スタッフ研修 Lv.'+trn+'（満足度+・離職↓）¥'+fmt(40000*(trn+1))+'</button>'+'</div><div class="r" style="margin-top:8px"><button data-c>閉じる</button><button data-z>最初からやり直す</button></div>';
  e.onclick=ev=>{const b=ev.target.closest('button');if(!b)return;const d=b.dataset;
   if(d.c!==undefined){e.style.display='none';return}
   if(d.z!==undefined){noSave=1;try{localStorage.removeItem('ght')}catch(x){}location.reload();return}
   if(d.ax!==undefined){const c=aS?60000*(aS.nF+1):400000;if(aS&&aS.nF>=6)return toast('上限です');if(money<c)return toast('資金不足');money-=c;if(!aS)buildAnnex();addAnnexFloor();toast('🏨 別館が完成!');confetti();beep(659,.2)}
   if(d.f!==undefined){const k=d.f;if(F[k])return;if(money<FC[k])return toast('資金不足');money-=FC[k];F[k]=1;buildFac(k);toast('完成しました！')}
+  if(d.tr!==undefined){const c=40000*(trn+1);if(trn>=3)return toast('最大です');if(money<c)return toast('資金不足');money-=c;LG.exp+=c;trn++;toast('🎓 研修完了 Lv.'+trn)}
   if(d.h!==undefined){const k=d.h;if(S[k]>=(k=='clean'?5:3))return toast('上限です');if(money<10000)return toast('資金不足');money-=10000;S[k]++;staffMesh(k)}
   menu();hud()}}
-function save(){if(noSave)return;try{localStorage.setItem('ght',JSON.stringify({money,rating,day,lastDay,mult,nF,F,S,debt,ins,LG,LP,ev,ads,brand,ach,RV,totRev,land:PL.map(p=>[p.own,p.an?p.an.nF:-1]),landIdx,BRoff,s:slots.filter(s=>s.type||s.fac).map(s=>[s.ox||0,s.f,s.i,s.type,s.lvl,s.cond,s.fac])}))}catch(e){}}
+function save(){if(noSave)return;try{localStorage.setItem('ght',JSON.stringify({money,rating,day,lastDay,mult,nF,F,S,debt,ins,LG,LP,ev,ads,brand,ach,RV,totRev,trn,hist,overdue,FX,land:PL.map(p=>[p.own,p.an?p.an.nF:-1]),landIdx,BRoff,s:slots.filter(s=>s.type||s.fac).map(s=>[s.ox||0,s.f,s.i,s.type,s.lvl,s.cond,s.fac])}))}catch(e){}}
 function load(){try{const d=JSON.parse(localStorage.getItem('ght'));if(!d)return false;
  ({money,rating,day,lastDay,mult}=d);debt=d.debt||0;ins=d.ins||0;LG=d.LG||LG;LP=d.LP||null;ev=d.ev||ev;ads=d.ads||{};brand=d.brand||0;ach=d.ach||{};RV=d.RV||1;totRev=d.totRev||0;lvl=lvlOf(totRev);Object.assign(F,d.F);Object.assign(S,d.S);while(nF<d.nF)addFloor();
- if(d.land)d.land.forEach((v,i)=>{const p=PL[i];if(p&&v[0]){p.own=1;markLand(p);if(v[1]>=0){buildAn(p);while(p.an.nF<v[1])addAn(p)}}});else if(d.anx>=0){PL[0].own=1;markLand(PL[0]);buildAn(PL[0]);while(PL[0].an.nF<d.anx)addAn(PL[0])}landIdx=d.landIdx||1;BRoff=d.BRoff||0;
+ if(d.land)d.land.forEach((v,i)=>{const p=PL[i];if(p&&v[0]){p.own=1;markLand(p);if(v[1]>=0){buildAn(p);while(p.an.nF<v[1])addAn(p)}}});else if(d.anx>=0){PL[0].own=1;markLand(PL[0]);buildAn(PL[0]);while(PL[0].an.nF<d.anx)addAn(PL[0])}landIdx=d.landIdx||1;BRoff=d.BRoff||0;trn=d.trn||0;hist=d.hist||[];overdue=d.overdue||0;FX=d.FX||1;
  d.s.forEach((v,i)=>{let s,t,l,c,f;if(v.length>=7){s=slots.find(x=>(x.ox||0)==v[0]&&x.f==v[1]&&x.i==v[2]);t=v[3];l=v[4];c=v[5];f=v[6]}else{s=slots[i];t=v[0];l=v[1];c=v[2]}if(s&&(t||f)){s.type=t||0;s.lvl=l||0;s.cond=c;if(f){s.fac=f;furnishFac(s)}else furnish(s)}});Object.keys(IN).forEach(k=>{if(F[k]&&!slots.some(s=>s.fac==k)){F[k]=0;money+=FC[k]}});
  Object.keys(F).forEach(k=>F[k]&&!IN[k]&&buildFac(k));['clean','conc'].forEach(k=>{for(let i=0;i<S[k];i++)staffMesh(k)});return true}catch(e){return false}}
 addEventListener('resize',resize);resize();addFloor();PL.forEach(markLand);const ld=load();bF();hud();toast(ld?'セーブデータを読み込みました':'空き部屋をタップして客室を建てよう');
