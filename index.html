@@ -34,7 +34,7 @@ const hemi=new T.HemisphereLight(0xcfe6ff,0x4a5a3a,.8),sun=new T.DirectionalLigh
 sun.castShadow=true;sun.shadow.mapSize.set(2048,2048);sun.shadow.bias=-.0004;
 Object.assign(sun.shadow.camera,{left:-26,right:26,top:30,bottom:-20,far:140});scene.add(hemi,sun,sun.target);
 const M=(c,r=.7,m=0,o={})=>new T.MeshStandardMaterial(Object.assign({color:c,roughness:r,metalness:m},o));
-const hotel=new T.Group();scene.add(hotel);
+let hotel=new T.Group(),OX=0;scene.add(hotel);
 function box(w,h,d,m,x,y,z,p){const o=new T.Mesh(new T.BoxGeometry(w,h,d),m);o.position.set(x,y,z);o.castShadow=o.receiveShadow=true;(p||hotel).add(o);return o}
 function ball(r,m,x,y,z,p){const o=new T.Mesh(new T.SphereGeometry(r,16,12),m);o.position.set(x,y,z);o.castShadow=true;p.add(o);return o}
 const wall=M(0xf3ece0,.9),slab=M(0xd6cfc0,.8),gold=M(0xc8963e,.3,.9),wood=M(0x5b4636,.6),white=M(0xf4f1ea,.9),
@@ -48,7 +48,7 @@ for(let i=-90;i<90;i+=6)plane(2.2,.18,0xeeeeee,i,19,.03);
 function tree(x,z,s){const g=new T.Group();g.position.set(x,0,z);g.scale.setScalar(s);
  const t=new T.Mesh(new T.CylinderGeometry(.2,.3,2,8),wood);t.position.y=1;t.castShadow=true;g.add(t);
  ball(1.3,green,0,3,0,g);ball(1,M(0x4b8a44,.9),.6,3.7,.3,g);scene.add(g)}
-[[-21,3],[-27,-4],[15,0],[20,13],[-10,-6],[10,-6],[-27,14],[32,-14],[-16,16],[17,15]].forEach(p=>tree(p[0],p[1],.9+Math.random()*.5));
+[[-28,8],[-27,-4],[15,0],[20,13],[-10,-6],[10,-6],[-27,14],[32,-14],[-16,16],[17,15]].forEach(p=>tree(p[0],p[1],.9+Math.random()*.5));
 const car=new T.Group();box(3.4,.7,1.6,M(0xb3262c,.3,.5),0,.6,0,car);box(1.8,.6,1.4,M(0x222a33,.2,.3),-.1,1.2,0,car);
 [[-1.1,.7],[1.1,.7],[-1.1,-.7],[1.1,-.7]].forEach(p=>{const w=new T.Mesh(new T.CylinderGeometry(.35,.35,.3,14),M(0x111111));w.rotation.x=Math.PI/2;w.position.set(p[0],.35,p[1]);car.add(w)});
 car.position.set(-60,0,20);scene.add(car);
@@ -76,7 +76,7 @@ function addFloor(){
  for(let i=0;i<4;i++){const cx=-W/2+SW*(i+.5);
   const w=new T.Mesh(new T.PlaneGeometry(1.8,1.4),glass);w.position.set(cx,y+1.9,-D/2+.11);hotel.add(w);box(2,.08,.08,gold,cx,y+2.62,-D/2+.12);box(2,.08,.1,gold,cx,y+1.18,-D/2+.12);box(.08,1.4,.08,gold,cx-.95,y+1.9,-D/2+.12);box(.08,1.4,.08,gold,cx+.95,y+1.9,-D/2+.12);
   const hit=new T.Mesh(new T.BoxGeometry(SW-.3,FH-.4,D-.6),new T.MeshBasicMaterial({color:0x4fc3f7,transparent:true,opacity:.16,depthWrite:false}));
-  hit.position.set(cx,y+FH/2,0);hotel.add(hit);const s={f,i,cx,y:y+.13,type:0,lvl:0,hit,g:null,rsv:false};hit.userData.s=s;slots.push(s)}
+  hit.position.set(cx,y+FH/2,0);hotel.add(hit);const s={f,i,cx,y:y+.13,type:0,lvl:0,hit,g:null,rsv:false,ox:OX,par:hotel};hit.userData.s=s;slots.push(s)}
  // elevator shaft (inside front-left corridor)
  if(shaft)hotel.remove(shaft);shaft=new T.Group();const H=(nF+1)*FH;
  const sg=new T.Mesh(new T.BoxGeometry(1.2,H,1.2),glass);sg.position.set(-5.2,H/2,2.7);shaft.add(sg);
@@ -91,17 +91,18 @@ function addFloor(){
  C.ty=Math.max(C.ty,(nF+1)*FH/2);bF();
 }
 function furnish(s){
- if(s.g)hotel.remove(s.g);const g=s.g=new T.Group();g.position.set(s.cx,s.y,0);hotel.add(g);const t=s.type,L=s.lvl;
+ if(s.g)s.par.remove(s.g);const g=s.g=new T.Group();g.position.set(s.cx,s.y,0);s.par.add(g);const t=s.type,L=s.lvl;
  box(SW-.15,.04,5,M([0,0x8a6f5a,0x3e5c7a,0x6b2f3a][t],1),0,.02,-1,g);
  const bw=[0,1,1.5,1.9][t];box(bw+.1,.45,2.1,wood,0,.22,-2.3,g);box(bw,.25,2,white,0,.57,-2.3,g);
  box(bw,.06,1.1,M(0x9a3b3b+t*0x1a0a00,.9),0,.72,-1.8,g);box(bw+.2,1.1,.12,wood,0,.8,-3.4,g);
  (t>1?[-1,1]:[0]).forEach(k=>box(bw*(t>1?.4:.7),.12,.45,white,k*bw*.23,.75,-3.0,g));
  box(.4,.4,.4,wood,bw/2+.4,.2,-3.1,g);ball(.13,lamp,bw/2+.4,.58,-3.1,g);
  [-1.15,1.15].forEach(k=>box(.4,1.8,.1,M(0xa13a4a,.95),k,1.95,-3.3,g));box(2.9,.06,.06,gold,0,2.9,-3.3,g);
- const cl=new T.Mesh(new T.CylinderGeometry(.35,.35,.06,20),lamp);cl.position.y=FH-.4;g.add(cl);
+ const cl=new T.Mesh(new T.CylinderGeometry(.35,.35,.06,20),s.lm=lamp.clone());cl.position.y=FH-.4;g.add(cl);
  box(1.1,.65,.06,M(0x0c0e12,.2,.6),SW/2-.1,1.5,-.5,g).rotation.y=-Math.PI/2;
  if(t>1){box(1.3,.4,.6,M(0x4a5f6a,.8),-.6,.2,.9,g);box(1.3,.5,.15,M(0x4a5f6a,.8),-.6,.6,1.15,g);}
  if(t>2){box(.9,.05,.9,wood,.8,.45,.6,g);box(.1,.45,.1,wood,.8,.2,.6,g);ball(.35,green,1.1,.9,-.6,g);box(.4,.4,.4,white,1.1,.2,-.6,g);}
+ box(.5,.05,1.3,wood,-1.2,.75,-.3,g);[[-1.4,-.9],[-1,-.9],[-1.4,.3],[-1,.3]].forEach(a=>box(.05,.75,.05,wood,a[0]+.1,.37,a[1],g));box(.4,.4,.4,M(0x2f3a4a),-.7,.4,-.3,g);box(.08,.5,.4,M(0x2f3a4a),-.52,.7,-.3,g);box(.3,.02,.22,M(0x1a1a1a),-1.2,.79,-.3,g);box(.02,.2,.28,M(0x223344,.2,.5),-1.33,.9,-.3,g);box(.4,1.9,.5,M(0x8a6a4a,.7),-1.25,.95,-3.2,g);box(.45,.6,.45,M(0xdddddd,.4,.3),1.2,.3,-.9,g);
  if(L>1)box(SW-.2,.06,.06,gold,0,2.9,-3.4,g);if(L>2)ball(.18,lamp,0,2.8,-1,g);
  s.hit.material.opacity=0;
 }
@@ -112,8 +113,8 @@ function mkGuest(){const g=new T.Group(),c=new T.Color().setHSL(Math.random(),.5
  const h=new T.Mesh(new T.SphereGeometry(.17,12,10),M(rnd(skins),.7));h.position.y=1.08;
  const l=new T.Mesh(new T.BoxGeometry(.32,.3,.2),M(0x23262e));l.position.y=.15;
  [b,h,l].forEach(o=>{o.castShadow=true;g.add(o)});scene.add(g);return g}
-function path(s,car){const V=(x,y,z)=>new T.Vector3(x,y,z);
- const a=[V(rnd([-9,-5,5,9]),Y0,13),V(0,Y0,9),V(0,Y0,3.4),V(-5.2,Y0,3.4),V(-5.2,Y0,2.7),V(-5.2,s.y,2.7),V(s.cx,s.y,2.7),V(s.cx,s.y,.4)];
+function path(s,car){const O=s.ox||0;const V=(x,y,z)=>new T.Vector3(x,y,z);
+ const a=[V(rnd([-9,-5,5,9]),Y0,13),V(O,Y0,9),V(O,Y0,3.4),V(O-5.2,Y0,3.4),V(O-5.2,Y0,2.7),V(O-5.2,s.y,2.7),V(O+s.cx,s.y,2.7),V(O+s.cx,s.y,.4)];
  if(car)a.splice(0,1,V(20,Y0,2),V(10,Y0,7.5));return a}
 // ---- state
 let money=250000,rating=3.5,day=.33,lastDay=0,arr=0,spd=1,mult=1,hudT=0;
@@ -130,11 +131,11 @@ function sim(g){
  const vac=slots.filter(s=>s.type&&!s.rsv&&!(s.rdy>day)),dem=Math.max(.1,rating/3.5*Math.min(1.5,Math.max(.5,Math.pow(RV/mult,.8))))*(1+.15*F.rest+.2*F.pool+.1*S.conc+fxD())*ev.m*((day|0)%7>4?1.3:1)*adM()*(((day|0)%40>29&&(day|0)%40<34)?1.4:1)*SM[season]*[1,.95,.8][wx]*(1+brand/150);
  arr+=g*dem*(.05+.03*built())*hw();
  if(arr>=1){arr=0;if(vac.length){const car=Math.random()<.35,full=car&&(!F.park||guests.filter(x=>x.car).length>=16);if(full){if(Math.random()<.3)toast('🚗 満車・駐車場なしで客を逃しました')}else{const sg=pickSeg(),cd=vac.filter(x=>price(x)<=sg.bud*INF()*(.8+Math.random()*.4));if(!cd.length){if(Math.random()<.25)toast('💴 '+sg.n+'客：料金が合わず予約なし')}else{const s=cd.sort((a,b)=>Math.abs(a.type-sg.pref)-Math.abs(b.type-sg.pref)||Math.random()-.5)[0];s.rsv=true;s.seg=sg;s.nt=sg.n2[0]+(Math.random()*(sg.n2[1]-sg.n2[0]+1)|0);const q={s,car,m:mkGuest(),p:path(s,car),i:1,st:'in'};q.m.position.copy(q.p[0]);guests.push(q);s.gst=q}}}}
- slots.forEach(s=>{if(s.gst&&s.gst.st=='stay'&&day>=s.leave){const q=s.gst;q.st='out';q.p=q.p.slice().reverse();q.i=1;q.m.position.copy(q.p[0]);q.m.visible=true}});
+ slots.forEach(s=>{if(s.gst&&s.gst.st=='stay'&&day>=s.leave){const q=s.gst;q.st='out';q.p=q.p.slice().reverse();q.i=1;q.m.position.copy(q.p[0]);q.m.rotation.x=0;q.m.visible=true}});
 }
-function arrive(q){const s=q.s;if(Math.random()<.07*(wx==2?1.8:1)){const f=Math.round(price(s)*.3);LG.rev+=f;money+=f;toast('📵 直前キャンセル キャンセル料 ¥'+fmt(f));q.st='out';q.p=q.p.slice().reverse();q.i=1;s.nt=0;return}q.st='stay';q.m.visible=false;s.leave=Math.floor(day)+s.nt+11/24+Math.random()*.08;const pr=Math.round(price(s)*s.nt);LG.rev+=pr;totRev+=pr;LG.nights=(LG.nights||0)+s.nt;money+=pr;
+function arrive(q){const s=q.s;if(Math.random()<.07*(wx==2?1.8:1)){const f=Math.round(price(s)*.3);LG.rev+=f;money+=f;toast('📵 直前キャンセル キャンセル料 ¥'+fmt(f));q.st='out';q.p=q.p.slice().reverse();q.i=1;s.nt=0;return}q.st='stay';q.at=0;q.act='';s.leave=Math.floor(day)+s.nt+11/24+Math.random()*.08;const pr=Math.round(price(s)*s.nt);LG.rev+=pr;totRev+=pr;LG.nights=(LG.nights||0)+s.nt;money+=pr;
  const sat=Math.max(0,Math.min(1,.45+.13*(s.type-1)+.1*(s.lvl-1)+(1-mult)*.5+((s.cond==null?1:s.cond)-1)*.35-Math.max(0,occ()/(1+S.clean*3)-3)*.04+S.clean*.03+F.rest*.07+F.pool*.07+fxS()+(Math.random()-.5)*.3));const fr=F.rest*800+F.pool*500+fxR();LG.rev+=fr;money+=fr;rating=rating*.9+(1+4*sat)*.1;if(Math.random()<.18)review(sat);cheer(q,pr+fr,sat)}
-function walk(g){for(let k=guests.length-1;k>=0;k--){const q=guests[k];if(q.st=='stay')continue;
+function walk(g){for(let k=guests.length-1;k>=0;k--){const q=guests[k];if(q.st=='stay'){life(q,g);continue}
  const tg=q.p[q.i],d=tg.clone().sub(q.m.position),L=d.length(),st=2.3*g;
  if(L<=st){q.m.position.copy(tg);q.i++;if(q.i>=q.p.length){if(q.st=='in')arrive(q);else{scene.remove(q.m);q.s.rsv=false;q.s.gst=null;q.s.rdy=day+.3/(1+S.clean*.6);guests.splice(k,1)}}}
  else{d.multiplyScalar(st/L);q.m.position.add(d);if(Math.hypot(d.x,d.z)>1e-4)q.m.rotation.y=Math.atan2(d.x,d.z);q.m.children[0].rotation.z=Math.sin(performance.now()/110+k)*.08}}}
@@ -157,14 +158,15 @@ const ray=new T.Raycaster();
 function pick(e){ray.setFromCamera({x:e.clientX/innerWidth*2-1,y:-(e.clientY/innerHeight)*2+1},cam);
  const h=ray.intersectObjects(slots.map(s=>s.hit))[0];if(h)sheet(h.object.userData.s);else $('sheet').style.display='none'}
 function sheet(s){const e=$('sheet');e.style.display='block';let h='';
- if(!s.type){h='<h3>'+s.f+'階 '+(s.i+1)+'号室を建設</h3><div class="r">'+[1,2,3].map(t=>'<button data-b="'+t+'">'+NAME[t]+'　建設費 ¥'+fmt(COST[t])+'<br><small>1泊 ¥'+fmt(BASE[t])+'〜</small></button>').join('')+'</div>'}
+ if(s.fac){h='<h3>'+s.f+'階 '+FN(s.fac)+'</h3><div class="r"><button data-x>閉業して50%返金</button></div>'}else if(!s.type){h='<h3>'+s.f+'階 '+(s.i+1)+'号室を建設</h3><div class="r">'+[1,2,3].map(t=>'<button data-b="'+t+'">'+NAME[t]+'　建設費 ¥'+fmt(COST[t])+'<br><small>1泊 ¥'+fmt(BASE[t])+'〜</small></button>').join('')+Object.keys(IN).filter(k=>!F[k]).map(k=>'<button data-g="'+k+'">'+FN(k)+'　¥'+fmt(FC[k])+'</button>').join('')+'</div>'}
  else{const uc=COST[s.type]*.6*s.lvl;h='<h3>'+s.f+'階 '+NAME[s.type]+'　Lv.'+s.lvl+'</h3><div class="r">'+(s.lvl<3?'<button data-u>改装アップグレード ¥'+fmt(uc)+'<br><small>料金+35% / 満足度アップ</small></button>':'')+
   '<button data-x>解体して50%返金'+(s.rsv?'（宿泊中は不可）':'')+'</button></div>'}
  e.innerHTML=h+'<div class="r" style="margin-top:8px"><button data-c>閉じる</button></div>';e.onclick=ev=>{const b=ev.target.closest('button');if(!b)return;const d=b.dataset;
   if(d.b!==undefined){const t=+d.b;if(money<COST[t])return toast('資金不足');money-=COST[t];s.type=t;s.lvl=1;s.rdy=day+.7;furnish(s);toast(NAME[t]+'が完成！')}
   else if(d.u!==undefined){const c=COST[s.type]*.6*s.lvl;if(money<c)return toast('資金不足');money-=c;s.lvl++;s.rdy=day+1.5;toast('🔨 改装工事中（1.5日休業）');furnish(s)}
+  else if(d.g!==undefined){const k=d.g;if(money<FC[k])return toast('資金不足');money-=FC[k];F[k]=1;s.fac=k;s.rdy=day+.7;furnishFac(s);toast(FN(k)+'が開業!');confetti();beep(784,.2)}
   else if(d.m!==undefined){const c=COST[s.type]*.05;if(money<c)return toast('資金不足');money-=c;LG.exp+=c;s.cond=1}
-  else if(d.x!==undefined){if(s.rsv)return;money+=COST[s.type]/2;s.type=0;s.lvl=0;hotel.remove(s.g);s.g=null;s.hit.material.opacity=.16}
+  else if(d.x!==undefined){if(s.rsv)return;money+=(s.fac?FC[s.fac]:COST[s.type])/2;if(s.fac){F[s.fac]=0;s.fac=null}s.type=0;s.lvl=0;s.par.remove(s.g);s.g=null;s.hit.material.opacity=.16}
   e.style.display='none';hud()}}
 $('bF').onclick=()=>{if(nF>=MAXF)return;const c=40000*nF;if(money<c)return toast('資金不足');money-=c;addFloor();hud()};
 $('bP-').onclick=()=>{mult=Math.max(.6,mult-.1);hud()};$('bP+').onclick=()=>{mult=Math.min(1.6,mult+.1);hud()};
@@ -185,7 +187,7 @@ const grade=()=>{const r=debt/(assets()+1);return rating>=4&&r<.3?'A':rating>=3&
 const limit=()=>grade()=='D'?0:Math.max(0,Math.floor((assets()*.7-debt)/100000)*100000);
 const AD={bb:{n:'看板広告',c:30000,d:5,m:1.15,b:5},net:{n:'ネット広告',c:50000,d:7,m:1.25,b:8},tv:{n:'TV CM',c:200000,d:10,m:1.6,b:25}},SM=[1.1,1.15,1,.85];
 const adM=()=>Object.keys(ads).reduce((a,k)=>a*(ads[k]>0?AD[k].m:1),1);
-const parkCars=[];function pk(){const n=guests.filter(x=>x.car).length;parkCars.forEach((c,i)=>c.visible=i<n)}
+const parkCars=[];function pk(){slots.forEach(s=>{if(s.lm)s.lm.emissiveIntensity=s.rsv?(s.gst&&s.gst.act=='sleep'?.3:2.6):.1});const n=guests.filter(x=>x.car).length;parkCars.forEach((c,i)=>c.visible=i<n)}
 function mkCar(c){const g=new T.Group();box(3.4,.7,1.6,M(c,.3,.5),0,.6,0,g);box(1.8,.6,1.4,M(0x222a33,.2,.3),-.1,1.2,0,g);
  [[-1.1,.7],[1.1,.7],[-1.1,-.7],[1.1,-.7]].forEach(p=>{const w=new T.Mesh(new T.CylinderGeometry(.35,.35,.3,14),M(0x111111));w.rotation.x=Math.PI/2;w.position.set(p[0],.35,p[1]);g.add(w)});return g}
 function mkPark(g){g.position.set(26,0,0);box(14,.08,18,M(0x3a3d44,.95),0,.04,0,g);
@@ -240,7 +242,7 @@ function mkFac(k,g){const wt=M(0x6ac3d8,.1,.2,{transparent:true,opacity:.8,emiss
   if(k=='bar')box(2,.3,.1,lamp,0,h-.4,d/2+.06,g);
   if(k=='conf')[-1,1].forEach(a=>box(.08,5,.08,gold,a*(w/2+.8),2.5,d/2,g));
   if(k=='shop')for(let i=0;i<6;i++)box(.5,.1,1.2,M(i%2?0xc0392b:0xf4f1ea),-1.25+i*.5,h-.1,d/2+.5,g)}
- else{g.position.set(-14,0,7);box(6,.1,3.2,M(0x4f8f3f,1),0,.05,0,g);const pd=new T.Mesh(new T.CylinderGeometry(1.1,1.1,.12,20),wt);pd.position.set(-1,.12,0);g.add(pd);
+ else{g.position.set(-10,0,6.5);box(6,.1,3.2,M(0x4f8f3f,1),0,.05,0,g);const pd=new T.Mesh(new T.CylinderGeometry(1.1,1.1,.12,20),wt);pd.position.set(-1,.12,0);g.add(pd);
   box(1.8,.12,.5,M(0xb03a2e),-1,.3,0,g);[[1.6,.9],[-2.3,-.9],[2.3,-.2]].forEach(a=>ball(.25,M(0x7a7f85,.9),a[0],.25,a[1],g));
   box(.2,1.2,.2,wood,2.2,.7,.6,g);ball(.9,M(0xf2a6c0,.9),2.2,1.8,.6,g)}}
 const pops=[],CN=140,cp=new Float32Array(CN*3),cc=new Float32Array(CN*3),cvl=new Float32Array(CN*3);let cfT=0,ac;
@@ -250,14 +252,44 @@ const cpts=new T.Points(cg,new T.PointsMaterial({size:.35,vertexColors:true}));c
 function confetti(){cfT=3;cpts.visible=true;for(let i=0;i<CN;i++){cp.set([(Math.random()-.5)*6,8+Math.random()*3,6+(Math.random()-.5)*3],i*3);cvl.set([(Math.random()-.5)*8,Math.random()*9,(Math.random()-.5)*6],i*3);const h=new T.Color().setHSL(Math.random(),.9,.6);cc.set([h.r,h.g,h.b],i*3)}}
 function pop(pos,t,col){const c=document.createElement('canvas');c.width=256;c.height=64;const x=c.getContext('2d');x.font='bold 40px sans-serif';x.textAlign='center';x.textBaseline='middle';x.lineWidth=6;x.strokeStyle='rgba(0,0,0,.6)';x.strokeText(t,128,34);x.fillStyle=col||'#ffe27a';x.fillText(t,128,34);
  const tx=new T.CanvasTexture(c);tx.encoding=T.sRGBEncoding;const sp=new T.Sprite(new T.SpriteMaterial({map:tx,transparent:true,depthTest:false}));sp.scale.set(3,.75,1);sp.position.set(pos.x,pos.y+1.8,pos.z);sp.renderOrder=10;scene.add(sp);pops.push({sp,t:0})}
-function popTick(dt){for(let i=pops.length-1;i>=0;i--){const p=pops[i];p.t+=dt;p.sp.position.y+=dt*1.2;p.sp.material.opacity=Math.max(0,1-p.t/1.8);if(p.t>1.8){scene.remove(p.sp);pops.splice(i,1)}}
+function popTick(dt){fnpc.forEach((m,i)=>{m.children[0].rotation.z=Math.sin(performance.now()/500+i)*.06});for(let i=pops.length-1;i>=0;i--){const p=pops[i];p.t+=dt;p.sp.position.y+=dt*1.2;p.sp.material.opacity=Math.max(0,1-p.t/1.8);if(p.t>1.8){scene.remove(p.sp);pops.splice(i,1)}}
  if(cfT>0){cfT-=dt;for(let i=0;i<CN;i++){cvl[i*3+1]-=dt*9;cp[i*3]+=cvl[i*3]*dt;cp[i*3+1]+=cvl[i*3+1]*dt;cp[i*3+2]+=cvl[i*3+2]*dt}cg.attributes.position.needsUpdate=true;if(cfT<=0)cpts.visible=false}}
 function chkLvl(){const l=lvlOf(totRev);if(l>lvl){lvl=l;const b=l*30000;money+=b;toast('🎉 ホテルランクUP! Lv.'+l+' ボーナス ¥'+fmt(b));confetti();[523,659,784,1047].forEach((f,i)=>setTimeout(()=>beep(f,.2),i*120))}}
 function cheer(q,amt,sat){const p0=q.m.position;if(pops.length<30){pop(p0,'💰+¥'+fmt(amt));pop({x:p0.x,y:p0.y+.9,z:p0.z},sat>.7?'😊':sat<.4?'😠':'🙂')}beep(1175,.08);combo=sat>.65?combo+1:0;
  if(combo>1){const tp=Math.round(amt*Math.min(.3,combo*.02));money+=tp;LG.rev+=tp;totRev+=tp;if(pops.length<30)pop(p0,'💴チップ+¥'+fmt(tp),'#9cffb0')}
  if(q.s.seg&&q.s.seg.n=='VIP'&&Math.random()<.25){money+=30000;brand=Math.min(100,brand+8);toast('🌟 有名人が宿泊! SNSで話題に +¥30,000');confetti();beep(1568,.3)}
  chkLvl()}
-let RV=1,busM=null,combo=0,totRev=0,lvl=0;const lvlOf=t=>Math.floor(Math.sqrt(t/60000));const INF=()=>1+.03*((day/40)|0);
+const IN={rest:1,spa:1,gym:1,bar:1,chapel:1,conf:1,shop:1,kids:1,cafe:1},fnpc=[],FN=k=>k=='rest'?'🍽 レストラン':FD[k].n;
+function life(q,g){const s=q.s,m=q.m,O=s.ox||0,hr=(day%1)*24,night=hr>=22||hr<7;q.at-=g;
+ if(q.at<=0){q.at=2+Math.random()*4;const r=Math.random();q.act=night?(r<.8?'sleep':'walk'):(r<.25?'tv':r<.55?'walk':r<.7?'sleep':'tv');
+  q.tg=q.act=='walk'?[O+s.cx+(Math.random()-.5)*1.6,s.y,-.2+Math.random()*1.6]:q.act=='tv'?[O+s.cx-.4,s.y+(s.type>1?.25:0),s.type>1?.9:.4]:[O+s.cx,s.y+.95,-1.4];
+  if(q.act=='sleep'&&pops.length<30&&Math.random()<.5)pop(m.position,'💤','#bfd7ff')}
+ const t=q.tg||[m.position.x,m.position.y,m.position.z],dx=t[0]-m.position.x,dy=t[1]-m.position.y,dz=t[2]-m.position.z,d=Math.hypot(dx,dy,dz),st=1.3*g;
+ if(d>.03){const k=Math.min(1,st/d);m.position.x+=dx*k;m.position.y+=dy*k;m.position.z+=dz*k;if(q.act=='walk')m.rotation.y=Math.atan2(dx,dz)}else if(q.act=='tv')m.rotation.y=Math.PI/2;
+ m.rotation.x=q.act=='sleep'&&d<.5?-Math.PI/2:0}
+function buildAnnex(){const g=new T.Group();g.position.set(-17,0,0);scene.add(g);aS={nF:0,shaft:null,roof:null,g};const sv=hotel;hotel=g;
+ box(W+.6,.25,D+.6,slab,0,0,0);box(W,FH,.2,wall,0,FH/2,-D/2);box(.2,FH,D,wall,-W/2,FH/2,0);box(.2,FH,D,wall,W/2,FH/2,0);box(W+.6,.06,D+.6,M(0xcbbfa8,.35,.1),0,.14,0);
+ [-3.6,3.6].forEach(x=>{const p=new T.Mesh(new T.PlaneGeometry(4.8,FH-.2),glass);p.position.set(x,FH/2,D/2);g.add(p);box(4.8,.1,.1,gold,x,FH-.1,D/2)});
+ box(.3,FH,.3,gold,-W/2,FH/2,D/2);box(.3,FH,.3,gold,W/2,FH/2,D/2);box(.2,FH,.2,gold,0,FH/2,D/2);[-2.6,0].forEach(x=>{box(1.8,.45,.8,M(0x2f4a5a,.8),x+1,.4,-1.5);box(1.8,.5,.2,M(0x2f4a5a,.8),x+1,.8,-1.9)});
+ box(4.6,.2,2.2,slab,-8.5,.1,0,scene);box(4.6,.2,2.2,slab,-8.5,FH,0,scene);[-1.1,1.1].forEach(z=>{const p=new T.Mesh(new T.PlaneGeometry(4.6,FH-.3),glass);p.position.set(-8.5,FH/2,z);scene.add(p)});
+ plane(8,6,0xc9c3b6,-17,6.5,.03);hotel=sv}
+function addAnnexFloor(){const sv=[nF,shaft,roof,hotel,OX];nF=aS.nF;shaft=aS.shaft;roof=aS.roof;hotel=aS.g;OX=-17;addFloor();aS.nF=nF;aS.shaft=shaft;aS.roof=roof;[nF,shaft,roof,hotel,OX]=sv;bF()}
+function furnishFac(s){const k=s.fac;if(s.g)s.par.remove(s.g);const g=s.g=new T.Group();g.position.set(s.cx,s.y,0);s.par.add(g);s.hit.material.opacity=0;
+ const B=(w,h,d,c,x,y,z)=>box(w,h,d,M(c,.7),x,y,z,g),N=(x,z,r,c,sc)=>{const m=mkGuest();if(c)m.children[0].material=M(c,.7);m.position.set(x,0,z);m.rotation.y=r;if(sc)m.scale.setScalar(sc);g.add(m);fnpc.push(m);return m};
+ B(SW-.15,.04,5.6,{rest:0x6b4a3a,spa:0xcfd8dc,gym:0x37474f,bar:0x2b1d16,chapel:0xefe6d6,conf:0x5d6d7e,shop:0xe8dcc0,kids:0xffd6e0,cafe:0xd9c3a5}[k],0,.02,-.7);
+ const cv=document.createElement('canvas');cv.width=256;cv.height=64;const x=cv.getContext('2d');x.fillStyle='#14161e';x.fillRect(0,0,256,64);x.fillStyle='#e8c070';x.font='bold 30px sans-serif';x.textAlign='center';x.textBaseline='middle';x.fillText(FN(k),128,34);
+ const tx=new T.CanvasTexture(cv);tx.encoding=T.sRGBEncoding;const sg=new T.Mesh(new T.PlaneGeometry(2.4,.6),new T.MeshBasicMaterial({map:tx}));sg.position.set(0,2.7,-3.3);g.add(sg);
+ const cl=new T.Mesh(new T.CylinderGeometry(.35,.35,.06,20),lamp);cl.position.y=FH-.4;g.add(cl);
+ if(k=='rest'){[-.7,.6].forEach(a=>{B(.9,.05,.9,0xf4f1ea,a,.75,.2);B(.08,.7,.08,0x555555,a,.4,.2);N(a,.9,Math.PI)});B(2.6,1,.5,0x3a2a20,0,.5,-2.3);N(0,-3,0,0xf4f1ea);N(-.7,-.5,0,0x2f4a5a)}
+ if(k=='spa'){B(2.4,.4,2,0x4aa3c8,0,.2,-1.5);B(2.2,.05,1.8,0x8fd8ee,0,.43,-1.5);N(-.4,-1.5,0,0xf0c9a5).position.y=.2;N(.5,-1.2,0,0xd9a47c).position.y=.2;B(.4,.4,.4,0x888888,1.1,.2,.2)}
+ if(k=='gym'){B(.7,.25,1.6,0x222222,-.7,.2,-1.5);B(.7,.9,.08,0x333333,-.7,.9,-2.3);N(-.7,-1.5,0,0xe74c3c);B(.5,.3,1.2,0x444444,.8,.2,-.5);B(1,.06,.06,0x999999,.8,.8,-.5);N(.8,.5,Math.PI,0x2e86c1);B(1.2,.9,.3,0x333333,0,.45,-3.1)}
+ if(k=='bar'){B(2.6,1,.5,0x4a2f20,0,.5,-.3);B(2.7,.06,.6,0xc8963e,0,1.03,-.3);[-.9,0,.9].forEach(a=>B(.35,.6,.35,0x7a2f2f,a,.3,.6));B(2.6,.08,.3,0x5b4636,0,1.6,-3.2);for(let i=0;i<7;i++)B(.12,.35,.12,[0x2e7d32,0x8d6e63,0xc62828,0x1565c0][i%4],-1.1+i*.37,1.8,-3.2);N(0,-1,0,0x111111);N(-.9,.6,Math.PI,0x8e44ad)}
+ if(k=='chapel'){[-.8,.8].forEach(a=>[1,0,-1].forEach(b=>B(.8,.5,.3,0x6b4a3a,a,.25,b+.5)));B(1.2,.8,.5,0xf4f1ea,0,.4,-2.6);B(.1,1.2,.1,0xc8963e,0,2,-3.2);B(.5,.1,.1,0xc8963e,0,2.3,-3.2);const w=new T.Mesh(new T.PlaneGeometry(1.2,1.6),M(0xff9ad0,.3,0,{emissive:0xff6a9a,emissiveIntensity:.8}));w.position.set(0,1.6,-3.35);g.add(w);N(-.2,-2.1,0,0xffffff);N(.3,-2.1,0,0x1c1f2b);N(-.8,.5,Math.PI,0x7a3b3b);N(.8,0,Math.PI,0x3b6ea5)}
+ if(k=='conf'){B(1.6,.08,3,0xdddddd,0,.75,-.6);B(.1,.7,.1,0x555555,0,.4,-.6);B(2.4,1.2,.06,0x1a2a4a,0,1.8,-3.3);[-.9,.9].forEach(a=>[-1.2,0,.9].forEach((b,i)=>N(a,b-.1,a<0?-Math.PI/2:Math.PI/2,[0x2f4a5a,0x7a3b3b,0x3b6e5a][i])))}
+ if(k=='shop'){[-1,1].forEach(a=>{B(.35,1.8,3.2,0x8a6a4a,a*1.1,.9,-1);for(let i=0;i<8;i++)B(.2,.25,.3,[0xe74c3c,0xf1c40f,0x2ecc71,0x3498db][i%4],a*1.1+(a<0?.2:-.2),.4+(i>>2)*.6,-2.4+(i%4)*.8)});B(1,.9,.5,0x3a2a20,0,.45,.5);N(0,1.1,Math.PI,0xc0392b);N(.2,-1,0,0x2f4a5a)}
+ if(k=='kids'){B(2.2,.4,2,0xff8fab,0,.2,-1.3);for(let i=0;i<14;i++)ball(.16,M([0xe74c3c,0xf1c40f,0x2ecc71,0x3498db][i%4],.5),-.9+(i%5)*.45,.5,-2+Math.floor(i/5)*.7,g);N(-.3,-1.3,0,0xf39c12,.6).position.y=.35;N(.5,-.8,0,0x16a085,.6).position.y=.35;B(.7,.08,1.6,0xe84393,1.1,.9,.4).rotation.x=.5;N(0,1.2,Math.PI,0x2f4a5a)}
+ if(k=='cafe'){B(2.6,1,.5,0x5a3b28,0,.5,-2.3);B(.5,.4,.4,0xb0b0b0,.7,1.2,-2.3);N(0,-3,0,0x6b4a2f);[-.8,.7].forEach(a=>{B(.7,.05,.7,0xf4f1ea,a,.7,.7);B(.07,.65,.07,0x555555,a,.35,.7);N(a,1.3,Math.PI,0x7a3b3b)})}}
+let RV=1,busM=null,aS=null,combo=0,totRev=0,lvl=0;const lvlOf=t=>Math.floor(Math.sqrt(t/60000));const INF=()=>1+.03*((day/40)|0);
 function review(s){const t=s>.8?['最高の滞在でした','スタッフが親切で感動','また泊まりたい']:s>.5?['まずまず快適','立地が良い','清潔でした']:['料金が高すぎる','部屋が古い','サービスが残念'];toast('💬 '+'★'.repeat(Math.round(1+4*s))+' 「'+rnd(t)+'」')}
 function daily2(di){specials(di);if(di%40==30)toast('🎌 大型連休スタート! 集客×1.4');RV=Math.max(.8,Math.min(1.35,RV+(Math.random()-.5)*.1));['clean','conc'].forEach(k=>{if(S[k]&&Math.random()<.02+(occ()>S[k]*6?.03:0)){S[k]--;const i=sMesh.map(m=>m.userData.k).lastIndexOf(k);if(i>=0){scene.remove(sMesh[i]);sMesh.splice(i,1)}toast('👋 '+(k=='clean'?'清掃スタッフ':'コンシェルジュ')+'が退職しました')}});slots.forEach(s=>{if(s.type&&s.cond!=null)s.cond=Math.min(1,s.cond+.01*S.clean)});for(const k in ads)if(ads[k]>0&&!--ads[k])toast('📢 '+AD[k].n+'終了');brand=Math.max(0,brand-.6);
  const r=Math.random();wx=r<.7?0:r<.9?1:2;season=((di/20)|0)%4;
@@ -309,18 +341,20 @@ function staffMesh(k){const m=mkGuest();m.children[0].material=M(k=='clean'?0x2f
 function menu(){const e=$('sheet');e.style.display='block';
  const fb=(k,n)=>'<button data-f="'+k+'">'+n+(F[k]?'　✔ 営業中':'　建設費 ¥'+fmt(FC[k]))+'</button>';
  const sb=(k,n,d)=>'<button data-h="'+k+'">'+n+'　'+S[k]+'人（雇用 ¥10,000／日給 ¥2,500）<br><small>'+d+'</small></button>';
- e.innerHTML='<h3>施設</h3><div class="r">'+fb('rest','🍽 レストラン（満足度+／宿泊ごと売上）')+fb('park','🅿 駐車場（車で来る客を受け入れ・16台）')+fb('pool','🏊 プール（満足度+／集客+）')+Object.keys(FD).map(k=>fb(k,FD[k].n+'（'+FD[k].d+'）')).join('')+'</div><h3 style="margin-top:10px">スタッフ</h3><div class="r">'+sb('clean','清掃スタッフ','満足度アップ（最大5人）')+sb('conc','コンシェルジュ','集客アップ（最大3人）')+'</div><div class="r" style="margin-top:8px"><button data-c>閉じる</button><button data-z>最初からやり直す</button></div>';
+ e.innerHTML='<h3>施設</h3><div class="r">'+'<button data-ax>'+(aS?'🏨 別館を増築 ¥'+fmt(60000*(aS.nF+1)):'🏨 別館を建設 ¥400,000')+'</button><small>屋内施設（レストラン・スパ等）は空き区画をタップして建設</small>'+fb('park','🅿 駐車場（車で来る客を受け入れ・16台）')+fb('pool','🏊 プール（満足度+／集客+）')+Object.keys(FD).filter(k=>!IN[k]).map(k=>fb(k,FD[k].n+'（'+FD[k].d+'）')).join('')+'</div><h3 style="margin-top:10px">スタッフ</h3><div class="r">'+sb('clean','清掃スタッフ','満足度アップ（最大5人）')+sb('conc','コンシェルジュ','集客アップ（最大3人）')+'</div><div class="r" style="margin-top:8px"><button data-c>閉じる</button><button data-z>最初からやり直す</button></div>';
  e.onclick=ev=>{const b=ev.target.closest('button');if(!b)return;const d=b.dataset;
   if(d.c!==undefined){e.style.display='none';return}
   if(d.z!==undefined){noSave=1;try{localStorage.removeItem('ght')}catch(x){}location.reload();return}
+  if(d.ax!==undefined){const c=aS?60000*(aS.nF+1):400000;if(aS&&aS.nF>=6)return toast('上限です');if(money<c)return toast('資金不足');money-=c;if(!aS)buildAnnex();addAnnexFloor();toast('🏨 別館が完成!');confetti();beep(659,.2)}
   if(d.f!==undefined){const k=d.f;if(F[k])return;if(money<FC[k])return toast('資金不足');money-=FC[k];F[k]=1;buildFac(k);toast('完成しました！')}
   if(d.h!==undefined){const k=d.h;if(S[k]>=(k=='clean'?5:3))return toast('上限です');if(money<10000)return toast('資金不足');money-=10000;S[k]++;staffMesh(k)}
   menu();hud()}}
-function save(){if(noSave)return;try{localStorage.setItem('ght',JSON.stringify({money,rating,day,lastDay,mult,nF,F,S,debt,ins,LG,LP,ev,ads,brand,ach,RV,totRev,s:slots.map(s=>[s.type,s.lvl,s.cond])}))}catch(e){}}
+function save(){if(noSave)return;try{localStorage.setItem('ght',JSON.stringify({money,rating,day,lastDay,mult,nF,F,S,debt,ins,LG,LP,ev,ads,brand,ach,RV,totRev,anx:aS?aS.nF:-1,s:slots.filter(s=>s.type||s.fac).map(s=>[s.ox||0,s.f,s.i,s.type,s.lvl,s.cond,s.fac])}))}catch(e){}}
 function load(){try{const d=JSON.parse(localStorage.getItem('ght'));if(!d)return false;
  ({money,rating,day,lastDay,mult}=d);debt=d.debt||0;ins=d.ins||0;LG=d.LG||LG;LP=d.LP||null;ev=d.ev||ev;ads=d.ads||{};brand=d.brand||0;ach=d.ach||{};RV=d.RV||1;totRev=d.totRev||0;lvl=lvlOf(totRev);Object.assign(F,d.F);Object.assign(S,d.S);while(nF<d.nF)addFloor();
- d.s.forEach((v,i)=>{if(v[0]&&slots[i]){slots[i].type=v[0];slots[i].lvl=v[1];slots[i].cond=v[2];furnish(slots[i])}});
- Object.keys(F).forEach(k=>F[k]&&buildFac(k));['clean','conc'].forEach(k=>{for(let i=0;i<S[k];i++)staffMesh(k)});return true}catch(e){return false}}
+ if(d.anx>=0){buildAnnex();while(aS.nF<d.anx)addAnnexFloor()}
+ d.s.forEach((v,i)=>{let s,t,l,c,f;if(v.length>=7){s=slots.find(x=>(x.ox||0)==v[0]&&x.f==v[1]&&x.i==v[2]);t=v[3];l=v[4];c=v[5];f=v[6]}else{s=slots[i];t=v[0];l=v[1];c=v[2]}if(s&&(t||f)){s.type=t||0;s.lvl=l||0;s.cond=c;if(f){s.fac=f;furnishFac(s)}else furnish(s)}});Object.keys(IN).forEach(k=>{if(F[k]&&!slots.some(s=>s.fac==k)){F[k]=0;money+=FC[k]}});
+ Object.keys(F).forEach(k=>F[k]&&!IN[k]&&buildFac(k));['clean','conc'].forEach(k=>{for(let i=0;i<S[k];i++)staffMesh(k)});return true}catch(e){return false}}
 addEventListener('resize',resize);resize();addFloor();const ld=load();bF();hud();toast(ld?'セーブデータを読み込みました':'空き部屋をタップして客室を建てよう');
 $('bX').onclick=menu;$('bB').onclick=finance;addEventListener('pointerdown',()=>{try{ac=ac||new (window.AudioContext||window.webkitAudioContext)();ac.resume()}catch(e){}});$('bA').onclick=adMenu;setInterval(save,4000);addEventListener('visibilitychange',save);addEventListener('pagehide',save);
 let last=performance.now();
