@@ -1,4 +1,4 @@
- <!DOCTYPE html><html lang="ja"><head><meta charset="utf-8">
+<!DOCTYPE html><html lang="ja"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>グランドホテル タイクーン 3D</title><link rel="icon" href="data:,">
 <style>
@@ -20,10 +20,10 @@ button:active{transform:scale(.96)}button.p{background:var(--ac);color:#fff}
 </style></head><body>
 <div class="bar" id="top"><div class="chip" id="cM"></div><div class="chip" id="cD"></div><div class="chip" id="cR"></div><div class="chip" id="cO"></div><div class="chip" id="cB"></div><div class="chip" id="cL"></div></div>
 <div id="toast"></div><div id="sheet"></div>
-<div class="bar" id="bot"><button class="p" id="bF"></button><button id="bP-">料金 −</button><button id="bP"></button><button id="bP+">料金 ＋</button><button id="bQ">📋</button><button id="bM">🔇</button><button id="bC">🎥 自由</button><button id="bL">🏞 土地</button><button id="bA">📢 CM</button><button id="bB">📊 経理</button><button id="bX">🏢 施設</button><button id="bS">▶ ×1</button></div>
+<div class="bar" id="bot"><button class="p" id="bF"></button><button id="bP-">料金 −</button><button id="bP"></button><button id="bP+">料金 ＋</button><button id="bY">🧩 事業</button><button id="bS2">📈 株式</button><button id="bQ">📋</button><button id="bM">🔇</button><button id="bC">🎥 自由</button><button id="bL">🏞 土地</button><button id="bA">📢 CM</button><button id="bB">📊 経理</button><button id="bX">🏢 施設</button><button id="bS">▶ ×1</button></div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script>
-const T=THREE,SW=3,W=12,D=7,FH=3.2,MAXF=8,Y0=.1;
+const T=THREE,SW=3,W=18,D=7,FH=3.2,MAXF=8,Y0=.1;
 const $=i=>document.getElementById(i),fmt=n=>Math.round(n).toLocaleString('ja-JP'),rnd=a=>a[Math.random()*a.length|0];
 const renderer=new T.WebGLRenderer({antialias:true});
 renderer.setPixelRatio(Math.min(devicePixelRatio,2));renderer.shadowMap.enabled=true;renderer.shadowMap.type=T.PCFSoftShadowMap;
@@ -31,8 +31,8 @@ renderer.toneMapping=T.ACESFilmicToneMapping;renderer.toneMappingExposure=.95;re
 document.body.appendChild(renderer.domElement);
 const scene=new T.Scene(),cam=new T.PerspectiveCamera(42,1,.1,300);scene.fog=new T.Fog(0x9fd0ff,60,170);
 const hemi=new T.HemisphereLight(0xcfe6ff,0x4a5a3a,.8),sun=new T.DirectionalLight(0xfff1d6,2.2);
-sun.castShadow=true;sun.shadow.mapSize.set(2048,2048);sun.shadow.bias=-.0004;
-Object.assign(sun.shadow.camera,{left:-26,right:26,top:30,bottom:-20,far:140});scene.add(hemi,sun,sun.target);
+sun.castShadow=true;sun.shadow.mapSize.set(4096,4096);sun.shadow.bias=-.0004;
+Object.assign(sun.shadow.camera,{left:-50,right:50,top:40,bottom:-30,far:160});scene.add(hemi,sun,sun.target);
 const M=(c,r=.7,m=0,o={})=>new T.MeshStandardMaterial(Object.assign({color:c,roughness:r,metalness:m},o));
 let hotel=new T.Group(),OX=0;scene.add(hotel);
 function box(w,h,d,m,x,y,z,p){const o=new T.Mesh(new T.BoxGeometry(w,h,d),m);o.position.set(x,y,z);o.castShadow=o.receiveShadow=true;(p||hotel).add(o);return o}
@@ -55,25 +55,28 @@ car.position.set(-60,0,20);scene.add(car);
 // ---- lobby
 box(W+.6,.25,D+.6,slab,0,0,0);box(W,FH,.2,wall,0,FH/2,-D/2);box(.2,FH,D,wall,-W/2,FH/2,0);box(.2,FH,D,wall,W/2,FH/2,0);
 box(W+.6,.06,D+.6,M(0xcbbfa8,.35,.1),0,.14,0);
-[-3.6,3.6].forEach(x=>{const p=new T.Mesh(new T.PlaneGeometry(4.8,FH-.2),glass);p.position.set(x,FH/2,D/2);hotel.add(p);box(4.8,.1,.1,gold,x,FH-.1,D/2);});
-box(12,.08,.1,gold,0,.2,D/2);box(.3,FH,.3,gold,-W/2,FH/2,D/2);box(.3,FH,.3,gold,W/2,FH/2,D/2);box(.2,FH,.2,gold,0,FH/2,D/2);
+[-7.5,-3.6,3.6,7.5].forEach(x=>{const w2=Math.abs(x)>5?3:4.8,p=new T.Mesh(new T.PlaneGeometry(w2,FH-.2),glass);p.position.set(x,FH/2,D/2);hotel.add(p);box(w2,.1,.1,gold,x,FH-.1,D/2)});
+box(W,.08,.1,gold,0,.2,D/2);box(.3,FH,.3,gold,-W/2,FH/2,D/2);box(.3,FH,.3,gold,W/2,FH/2,D/2);box(.2,FH,.2,gold,0,FH/2,D/2);
 box(3.2,1.1,.8,M(0x3a2a20,.4,.2),2.5,.7,-2);box(3.3,.08,.9,M(0xe8e1d4,.2,.3),2.5,1.28,-2);
 [-2.6,-.4].forEach(x=>{box(1.8,.45,.8,M(0x2f4a5a,.8),x,.4,-1.5);box(1.8,.5,.2,M(0x2f4a5a,.8),x,.8,-1.9)});
 box(1.4,.04,2,M(0x7a2f38,1),-1.5,.16,-1.4);ball(.5,green,-5,.9,-2.8,hotel);box(.5,.5,.5,white,-5,.4,-2.8);
+box(9,.12,2.4,M(0xeae6dc,.3,.1),0,.06,D/2+1.2);box(2.6,.02,5,M(0x8a1c28,1),0,.13,D/2+4);
+[-7,7].forEach(x=>{const f=new T.Mesh(new T.CylinderGeometry(1.7,1.9,.5,24),M(0xd8d2c4,.4));f.position.set(x,.25,7.5);hotel.add(f);const w=new T.Mesh(new T.CylinderGeometry(1.4,1.4,.1,24),M(0x6ac3d8,.1,.2,{transparent:true,opacity:.85,emissive:0x0a4a5a,emissiveIntensity:.4,depthWrite:false}));w.position.set(x,.5,7.5);hotel.add(w);const j=new T.Mesh(new T.ConeGeometry(.2,1.4,8),M(0xbfeaf5,.1,.1,{transparent:true,opacity:.7,depthWrite:false}));j.position.set(x,1.2,7.5);hotel.add(j)});
+[-4.3,4.3].forEach(x=>{box(.08,6,.08,gold,x,3,7.4);box(1.4,.8,.04,M(x<0?0xc0392b:0x1f5fbf),x+(x<0?-.74:.74),5.4,7.4)});
 box(6,.18,3.4,gold,0,FH+.05,D/2+1.6);[-2.7,2.7].forEach(x=>box(.22,FH,.22,gold,x,FH/2,D/2+3));
 const ch=new T.Mesh(new T.TorusGeometry(.8,.06,8,24),gold);ch.rotation.x=Math.PI/2;ch.position.set(0,FH-.7,0);hotel.add(ch);ball(.25,lamp,0,FH-.7,0,hotel);
 [2.6,-2.8].forEach(z=>{ball(.5,green,5.2,.9,z,hotel);box(.5,.5,.5,white,5.2,.4,z,hotel)});
 for(let x=-26;x<=26;x+=9){box(.12,4,.12,M(0x222222,.5,.6),x,2,10.5);ball(.3,lamp,x,4.1,10.5,scene)}
-for(let x=-5.5;x<=5.5;x+=1.4)if(Math.abs(x)>2)ball(.45,M(0x2f6a35,.9),x,.4,D/2+.9,hotel);
+for(let x=-8.5;x<=8.5;x+=1.4)if(Math.abs(x)>2)ball(.45,M(0x2f6a35,.9),x,.4,D/2+.9,hotel);
 // ---- floors / rooms
 const BASE=[0,5000,11000,24000],COST=[0,60000,150000,350000],NAME=['','スタンダード','デラックス','スイート'];
 const slots=[];let nF=0,roof,shaft;
 function addFloor(){
  nF++;const f=nF,y=f*FH,g=hotel;
  box(W+.6,.25,D+.6,slab,0,y,0);box(W,FH,.2,wall,0,y+FH/2,-D/2);box(.2,FH,D,wall,-W/2,y+FH/2,0);box(.2,FH,D,wall,W/2,y+FH/2,0);
- box(.3,FH,.3,gold,-W/2,y+FH/2,D/2);box(.3,FH,.3,gold,W/2,y+FH/2,D/2);box(W,.06,.06,gold,0,y+.55,D/2);{const r=new T.Mesh(new T.PlaneGeometry(W,.5),glass);r.position.set(0,y+.3,D/2);hotel.add(r)}
- for(let k=1;k<4;k++)box(.12,FH,5,wall,-W/2+SW*k,y+FH/2,-1);
- for(let i=0;i<4;i++){const cx=-W/2+SW*(i+.5);
+ box(.3,FH,.3,gold,-W/2,y+FH/2,D/2);box(.3,FH,.3,gold,W/2,y+FH/2,D/2);box(W+.7,.1,.5,gold,0,y+.02,D/2+.1);box(W,.06,.06,gold,0,y+.55,D/2);{const r=new T.Mesh(new T.PlaneGeometry(W,.5),glass);r.position.set(0,y+.3,D/2);hotel.add(r)}
+ for(let k=1;k<6;k++){box(.12,FH,5,wall,-W/2+SW*k,y+FH/2,-1);box(.16,FH,.16,gold,-W/2+SW*k,y+FH/2,D/2)}
+ for(let i=0;i<6;i++){const cx=-W/2+SW*(i+.5);
   const w=new T.Mesh(new T.PlaneGeometry(1.8,1.4),glass);w.position.set(cx,y+1.9,-D/2+.11);hotel.add(w);box(2,.08,.08,gold,cx,y+2.62,-D/2+.12);box(2,.08,.1,gold,cx,y+1.18,-D/2+.12);box(.08,1.4,.08,gold,cx-.95,y+1.9,-D/2+.12);box(.08,1.4,.08,gold,cx+.95,y+1.9,-D/2+.12);
   const hit=new T.Mesh(new T.BoxGeometry(SW-.3,FH-.4,D-.6),new T.MeshBasicMaterial({color:0x4fc3f7,transparent:true,opacity:.16,depthWrite:false}));
   hit.position.set(cx,y+FH/2,0);hotel.add(hit);const s={f,i,cx,y:y+.13,type:0,lvl:0,hit,g:null,rsv:false,ox:OX,par:hotel};hit.userData.s=s;slots.push(s)}
@@ -115,7 +118,7 @@ function mkGuest(){const g=new T.Group(),c=new T.Color().setHSL(Math.random(),.5
  [b,h,l].forEach(o=>{o.castShadow=true;g.add(o)});scene.add(g);return g}
 function path(s,car){const O=s.ox||0;const V=(x,y,z)=>new T.Vector3(x,y,z);
  const a=[V(rnd([-9,-5,5,9]),Y0,13),V(O,Y0,9),V(O,Y0,3.4),V(O-5.2,Y0,3.4),V(O-5.2,Y0,2.7),V(O-5.2,s.y,2.7),V(O+s.cx,s.y,2.7),V(O+s.cx,s.y,.4)];
- if(car)a.splice(0,1,V(28,Y0,-3),V(28,Y0,9));return a}
+ if(car)a.splice(0,1,V(38,Y0,-3),V(38,Y0,9));return a}
 // ---- state
 let money=250000,rating=3.5,day=.33,lastDay=0,arr=0,spd=1,mult=1,hudT=0;
 const built=()=>slots.filter(s=>s.type).length;
@@ -128,19 +131,19 @@ function hud(){pk();$('cL').textContent='🏅 Lv.'+lvl+'　'+'★'.repeat(hStars
 function sim(g){
  day+=g/50;const di=day|0;
  if(di>lastDay){lastDay=di;const c=INF()*(3000+1500*built()+Math.round(2900*(S.clean+S.conc))+1500*(F.rest+F.pool)+fxU()+Math.round(occ()*600*[1,1.3,1,1.4][season]));money-=c;LG.av=(LG.av||0)+built();LG.exp+=c;daily(di);if(di%10==0)settle();toast('経費 −¥'+fmt(c));if(money<-100000){spd=0;toast('倒産しました… 再読み込みで再開')}}
- const vac=slots.filter(s=>s.type&&!s.rsv&&!(s.rdy>day)),dem=Math.max(.1,rating/3.5*Math.min(1.5,Math.max(.5,Math.pow(RV/mult,.8))))*(1+.15*F.rest+.2*F.pool+.1*S.conc+fxD())*ev.m*((day|0)%7>4?1.3:1)*adM()*(((day|0)%40>29&&(day|0)%40<34)?1.4:1)*SM[season]*[1,.95,.8][wx]*(1+brand/150)*(1+.05*hStars());
+ const vac=slots.filter(s=>s.type&&!s.rsv&&!(s.rdy>day)),dem=Math.max(.1,rating/3.5*Math.min(1.5,Math.max(.5,Math.pow(RV/mult,.8))))*(1+.15*F.rest+.2*F.pool+.1*S.conc+fxD())*ev.m*((day|0)%7>4?1.3:1)*adM()*(((day|0)%40>29&&(day|0)%40<34)?1.4:1)*SM[season]*[1,.95,.8][wx]*(1+brand/150)*(1+.05*hStars())*(1+bz('travel')*.08+bz('taxi')*.04+bz('park')*.05);
  arr+=g*dem*(.05+.03*built())*hw();
  if(arr>=1){arr=0;if(vac.length){const car=Math.random()<.35,full=car&&(!F.park||guests.filter(x=>x.car).length>=16);if(full){if(Math.random()<.3)toast('🚗 満車・駐車場なしで客を逃しました')}else{const sg=pickSeg(),cd=vac.filter(x=>price(x)<=sg.bud*INF()*(1+.06*hStars())*(.8+Math.random()*.4));if(!cd.length){if(Math.random()<.25)toast('💴 '+sg.n+'客：料金が合わず予約なし')}else{const s=cd.sort((a,b)=>Math.abs(a.type-sg.pref)-Math.abs(b.type-sg.pref)||Math.random()-.5)[0];s.rsv=true;s.seg=sg;s.nt=sg.n2[0]+(Math.random()*(sg.n2[1]-sg.n2[0]+1)|0);const q={s,car,m:mkGuest(),p:path(s,car),i:1,st:'in'};q.m.position.copy(q.p[0]);guests.push(q);s.gst=q}}}}
  slots.forEach(s=>{if(s.gst&&s.gst.st=='stay'&&day>=s.leave){const q=s.gst;q.st='out';q.p=q.p.slice().reverse();q.i=1;q.m.position.copy(q.p[0]);q.m.rotation.x=0;q.m.visible=true}});
 }
 function arrive(q){const s=q.s;if(Math.random()<.07*(wx==2?1.8:1)){const f=Math.round(price(s)*.3);LG.rev+=f;money+=f;toast('📵 直前キャンセル キャンセル料 ¥'+fmt(f));q.st='out';q.p=q.p.slice().reverse();q.i=1;s.nt=0;return}q.st='stay';q.at=0;q.act='';s.leave=Math.floor(day)+s.nt+11/24+Math.random()*.08;const pr=Math.round(price(s)*s.nt);LG.rev+=pr;totRev+=pr;LG.nights=(LG.nights||0)+s.nt;money+=pr;
- const sat=Math.max(0,Math.min(1,.45+.13*(s.type-1)+.1*(s.lvl-1)+(1-mult)*.5+((s.cond==null?1:s.cond)-1)*.35-Math.max(0,occ()/(1+S.clean*3)-3)*.04+S.clean*.03+trn*.02+F.rest*.07+F.pool*.07+fxS()+(Math.random()-.5)*.3));const fr=F.rest*800+F.pool*500+fxR();LG.rev+=fr;money+=fr;rating=rating*.9+(1+4*sat)*.1;if(Math.random()<.18)review(sat);cheer(q,pr+fr,sat)}
+ const sat=Math.max(0,Math.min(1,.45+.13*(s.type-1)+.1*(s.lvl-1)+(1-mult)*.5+((s.cond==null?1:s.cond)-1)*.35-Math.max(0,occ()/(1+S.clean*3)-3)*.04+S.clean*.03+trn*.02+F.rest*.07+F.pool*.07+fxB(s.ox||0)+(Math.random()-.5)*.3));const fr=F.rest*800+F.pool*500+fxR();LG.rev+=fr;money+=fr;rating=rating*.9+(1+4*sat)*.1;if(Math.random()<.18)review(sat);cheer(q,pr+fr,sat)}
 function walk(g){for(let k=guests.length-1;k>=0;k--){const q=guests[k];if(q.st=='stay'){life(q,g);continue}
  const tg=q.p[q.i],d=tg.clone().sub(q.m.position),L=d.length(),st=2.3*g;
  if(L<=st){q.m.position.copy(tg);q.i++;if(q.i>=q.p.length){if(q.st=='in')arrive(q);else{scene.remove(q.m);q.s.rsv=false;q.s.gst=null;q.s.rdy=day+.3/(1+S.clean*.6);guests.splice(k,1)}}}
  else{d.multiplyScalar(st/L);q.m.position.add(d);if(Math.hypot(d.x,d.z)>1e-4)q.m.rotation.y=Math.atan2(d.x,d.z);q.m.children[0].rotation.z=Math.sin(performance.now()/110+k)*.08}}}
 // ---- camera & input
-const C={th:.5,ph:1.32,r:32,ty:6,tx:0,tz:0};
+const C={th:.5,ph:1.32,r:44,ty:6,tx:0,tz:0};
 function setCam(){C.ph=Math.max(.5,Math.min(1.55,C.ph));C.r=Math.max(12,Math.min(80,C.r));C.ty=Math.max(1,Math.min(45,C.ty));const sp=Math.sin(C.ph);
  cam.position.set(C.tx+C.r*sp*Math.sin(C.th),C.ty+C.r*Math.cos(C.ph),C.tz+C.r*sp*Math.cos(C.th));cam.lookAt(C.tx,C.ty,C.tz);if(shake>0){cam.position.x+=(Math.random()-.5)*shake;cam.position.y+=(Math.random()-.5)*shake;shake=Math.max(0,shake-.015)}}
 const P=new Map();let moved=0,t0=0,pd=0,pmy=0,pmx=0;const cv=renderer.domElement;
@@ -156,10 +159,10 @@ cv.addEventListener('pointerup',up);cv.addEventListener('pointercancel',e=>{P.de
 cv.addEventListener('wheel',e=>{C.r*=1+e.deltaY*.001},{passive:true});
 const ray=new T.Raycaster();
 function pick(e){ray.setFromCamera({x:e.clientX/innerWidth*2-1,y:-(e.clientY/innerHeight)*2+1},cam);
- const gh=ray.intersectObjects(guests.map(q=>q.m),true)[0];if(gh){const q=guests.find(x=>{let o=gh.object;while(o){if(o===x.m)return true;o=o.parent}return false});if(q){camQ=q;camMode=2;G=null;$('bC').textContent='🎥 追跡';pop(q.m.position,(q.s.seg?q.s.seg.n:'')+'のお客さん');return}}
+ const gh=ray.intersectObjects(guests.map(q=>q.m),true)[0];if(gh){const q=guests.find(x=>{let o=gh.object;while(o){if(o===x.m)return true;o=o.parent}return false});if(q){camQ=q;camMode=2;G=null;$('bC').textContent='🎥 追跡';guestInfo(q);return}}
  const h=ray.intersectObjects(slots.map(s=>s.hit))[0];if(h){const s0=h.object.userData.s;G={x:(s0.ox||0)+s0.cx,y:s0.y+1.2,z:0,r:14};camMode=0;sheet(s0)}else $('sheet').style.display='none'}
 function sheet(s){const e=$('sheet');e.style.display='block';let h='';
- if(s.fac){h='<h3>'+s.f+'階 '+FN(s.fac)+'</h3><div class="r"><button data-x>閉業して50%返金</button></div>'}else if(!s.type){h='<h3>'+s.f+'階 '+(s.i+1)+'号室を建設</h3><div class="r">'+[1,2,3].map(t=>'<button data-b="'+t+'">'+NAME[t]+'　建設費 ¥'+fmt(COST[t])+'<br><small>1泊 ¥'+fmt(BASE[t])+'〜</small></button>').join('')+Object.keys(IN).filter(k=>!F[k]).map(k=>'<button data-g="'+k+'">'+FN(k)+'　¥'+fmt(FC[k])+'</button>').join('')+'</div>'}
+ if(s.fac){h='<h3>'+s.f+'階 '+FN(s.fac)+'</h3><div class="r"><button data-x>閉業して50%返金</button></div>'}else if(!s.type){h='<h3>'+s.f+'階 '+(s.i+1)+'号室を建設</h3><div class="r">'+[1,2,3].map(t=>'<button data-b="'+t+'">'+NAME[t]+'　建設費 ¥'+fmt(COST[t])+'<br><small>1泊 ¥'+fmt(BASE[t])+'〜</small></button>').join('')+Object.keys(IN).filter(k=>!slots.some(x=>x.fac==k&&(x.ox||0)==(s.ox||0))).map(k=>'<button data-g="'+k+'">'+FN(k)+'　¥'+fmt(FC[k])+'</button>').join('')+'</div>'}
  else{const uc=COST[s.type]*.6*s.lvl;h='<h3>'+s.f+'階 '+NAME[s.type]+'　Lv.'+s.lvl+'</h3><div class="r">'+(s.lvl<3?'<button data-u>改装アップグレード ¥'+fmt(uc)+'<br><small>料金+35% / 満足度アップ</small></button>':'')+
   '<button data-x>解体して50%返金'+(s.rsv?'（宿泊中は不可）':'')+'</button></div>'}
  e.innerHTML=h+'<div class="r" style="margin-top:8px"><button data-c>閉じる</button></div>';e.onclick=ev=>{const b=ev.target.closest('button');if(!b)return;const d=b.dataset;
@@ -167,9 +170,9 @@ function sheet(s){const e=$('sheet');e.style.display='block';let h='';
   else if(d.u!==undefined){const c=COST[s.type]*.6*s.lvl;if(money<c)return toast('資金不足');money-=c;s.lvl++;s.rdy=day+1.5;toast('🔨 改装工事中（1.5日休業）');furnish(s)}
   else if(d.g!==undefined){const k=d.g;if(money<FC[k])return toast('資金不足');money-=FC[k];F[k]=1;s.fac=k;s.rdy=day+.7;furnishFac(s);toast(FN(k)+'が開業!');confetti();beep(784,.2)}
   else if(d.m!==undefined){const c=COST[s.type]*.05;if(money<c)return toast('資金不足');money-=c;LG.exp+=c;s.cond=1}
-  else if(d.x!==undefined){if(s.rsv)return;money+=(s.fac?FC[s.fac]:COST[s.type])/2;if(s.fac){F[s.fac]=0;s.fac=null}s.type=0;s.lvl=0;s.par.remove(s.g);s.g=null;s.hit.material.opacity=.16}
+  else if(d.x!==undefined){if(s.rsv)return;money+=(s.fac?FC[s.fac]:COST[s.type])/2;if(s.fac){const k0=s.fac;s.fac=null;F[k0]=slots.some(x=>x.fac==k0)?1:0}s.type=0;s.lvl=0;s.par.remove(s.g);s.g=null;s.hit.material.opacity=.16}
   e.style.display='none';hud()}}
-$('bF').onclick=()=>{if(nF>=MAXF)return;const c=40000*nF;if(money<c)return toast('資金不足');money-=c;addFloor();hud()};
+$('bF').onclick=()=>{if(nF>=MAXF)return;const c=40000*nF;if(money<c)return toast('資金不足');if(CQ.some(q=>q.key=='m'))return toast('🏗 工事中です');money-=c;startBuild('本館 '+(nF+1)+'階','m',3+nF);hud()};
 $('bP-').onclick=()=>{mult=Math.max(.6,mult-.1);hud()};$('bP+').onclick=()=>{mult=Math.min(1.6,mult+.1);hud()};
 $('bS').onclick=()=>{const L=[0,1,2,4];spd=L[(L.indexOf(spd)+1)%4];$('bS').textContent=spd?'▶ ×'+spd:'⏸ 停止'};
 // ---- day/night
@@ -182,7 +185,7 @@ function resize(){renderer.setSize(innerWidth,innerHeight);cam.aspect=innerWidth
 // ---- facilities, staff, save
 const F={rest:0,pool:0,park:0},S={clean:0,conc:0},FC={rest:120000,pool:200000,park:80000},sMesh=[];let noSave=0;
 let debt=0,ins=0,ev={n:'',u:0,m:1},LG={rev:0,exp:0,int:0,tax:0,ins:0,evt:0},LP=null,ads={},brand=0,wx=0,season=0,ach={};
-const assets=()=>.8*(slots.reduce((a,s)=>a+(s.type?COST[s.type]*(1+.6*(s.lvl-1)):0),0)+20000*(nF-1)*nF+F.rest*120000+F.pool*200000+F.park*80000+PL.reduce((a,p)=>a+(p.own?landPrice(p)*1.25:0),0)+Object.keys(FD).reduce((a,k)=>a+(F[k]?FD[k].c:0),0));
+const assets=()=>.8*(slots.reduce((a,s)=>a+(s.type?COST[s.type]*(1+.6*(s.lvl-1)):0),0)+20000*(nF-1)*nF+F.rest*120000+F.pool*200000+F.park*80000+PL.reduce((a,p)=>a+(p.own?landPrice(p)*1.25:0),0)+bizVal()*1.25+Object.keys(FD).reduce((a,k)=>a+(F[k]?FD[k].c:0),0));
 const worth=()=>money+assets()-debt,rate=()=>Math.max(.015,.065-rating*.008+BRoff);
 const grade=()=>{const r=debt/(assets()+1);return rating>=4&&r<.3?'A':rating>=3&&r<.5?'B':r<.7?'C':'D'};
 const limit=()=>grade()=='D'?0:Math.max(0,Math.floor((assets()*.7-debt)/100000)*100000);
@@ -191,7 +194,7 @@ const adM=()=>Object.keys(ads).reduce((a,k)=>a*(ads[k]>0?AD[k].m:1),1);
 const parkCars=[];function pk(){slots.forEach(s=>{if(s.lm)s.lm.emissiveIntensity=s.rsv?(s.gst&&s.gst.act=='sleep'?.3:2.6):.1});const n=guests.filter(x=>x.car).length;parkCars.forEach((c,i)=>c.visible=i<n)}
 function mkCar(c){const g=new T.Group();box(3.4,.7,1.6,M(c,.3,.5),0,.6,0,g);box(1.8,.6,1.4,M(0x222a33,.2,.3),-.1,1.2,0,g);
  [[-1.1,.7],[1.1,.7],[-1.1,-.7],[1.1,-.7]].forEach(p=>{const w=new T.Mesh(new T.CylinderGeometry(.35,.35,.3,14),M(0x111111));w.rotation.x=Math.PI/2;w.position.set(p[0],.35,p[1]);g.add(w)});return g}
-function mkPark(g){g.position.set(30,0,-13);box(14,.08,18,M(0x3a3d44,.95),0,.04,0,g);
+function mkPark(g){g.position.set(30,0,-16);box(14,.08,18,M(0x3a3d44,.95),0,.04,0,g);
  [-5,5].forEach(x=>{for(let i=0;i<9;i++)box(4.4,.02,.12,white,x,.1,-8.8+i*2.2,g)});
  for(let i=0;i<16;i++){const c=mkCar(rnd([0xb3262c,0x2a5da8,0xeeeeee,0x222222,0x2e8b57,0xd8a521]));c.position.set(i<8?-5:5,0,-7.7+(i%8)*2.2);c.visible=false;g.add(c);parkCars.push(c)}
  box(.15,3,.15,gold,-7,1.5,9.5,g);box(1.4,1.4,.1,M(0x1f5fbf),-7,3.4,9.5,g)}
@@ -222,16 +225,26 @@ const FD={spa:{n:'♨ 大浴場・スパ',d:'満足度+・集客+・宿泊売上
  kids:{n:'🎠 キッズクラブ',d:'ファミリー満足度+',c:90000,sat:.03,dem:.04,rev:0,up:700},
  ev:{n:'🔌 EV充電',d:'車の客の集客+',c:60000,sat:.01,dem:.04,rev:300,up:400},
  solar:{n:'☀ 太陽光発電',d:'光熱費を削減',c:200000,sat:0,dem:.01,rev:0,up:-1800},
- cafe:{n:'☕ カフェ',d:'宿泊ごと売上',c:80000,sat:.02,dem:.03,rev:350,up:700}};
+ cafe:{n:'☕ カフェ',d:'宿泊ごと売上',c:80000,sat:.02,dem:.03,rev:350,up:700},
+ rpool:{n:'🏊 屋上プール',d:'満足度+・集客+',c:260000,sat:.06,dem:.1,rev:700,up:1500},
+ rbar:{n:'🍸 スカイバー',d:'夜景・宿泊売上',c:200000,sat:.04,dem:.06,rev:800,up:1500},
+ rgarden:{n:'🌿 屋上庭園',d:'満足度+',c:120000,sat:.04,dem:.04,rev:0,up:600},
+ rsolar:{n:'☀ 屋上ソーラー',d:'光熱費削減',c:150000,sat:0,dem:.01,rev:0,up:-1500}};
 Object.keys(FD).forEach(k=>{F[k]=0;FC[k]=FD[k].c});
 const sumF=p=>Object.keys(FD).reduce((a,k)=>a+(F[k]?FD[k][p]:0),0),fxS=()=>sumF('sat'),fxD=()=>sumF('dem'),fxR=()=>sumF('rev'),fxU=()=>sumF('up');
-function specials(di){if(Math.random()<.01){shake=1.2;const f=ins?20000:150000;money-=f;LG.evt+=f;toast('🌋 地震発生 損害 ¥'+fmt(f)+(ins?'（保険適用）':''))}if(occ()>6&&Math.random()<.04){money-=30000;LG.evt+=30000;toast('🔊 近隣から騒音苦情 対応費 ¥30,000')}if(F.chapel&&Math.random()<.2){const b=90000+(Math.random()*110000|0);money+=b;LG.rev+=b;toast('💒 結婚式の披露宴 +¥'+fmt(b))}
+function specials(di){if(Math.random()<.01){shake=1.2;const f=ins?20000:150000;money-=f;LG.evt+=f;toast('🌋 地震発生 損害 ¥'+fmt(f)+(ins?'（保険適用）':''))}if(occ()>6&&Math.random()<.04){money-=30000;LG.evt+=30000;toast('🔊 近隣から騒音苦情 対応費 ¥30,000')}if(F.chapel&&Math.random()<.2){const b=Math.round((90000+(Math.random()*110000|0))*(1+bz('wed')*.3));money+=b;LG.rev+=b;toast('💒 結婚式の披露宴 +¥'+fmt(b))}
  if(F.conf&&di%7<5&&Math.random()<.4){const b=40000+(Math.random()*50000|0);money+=b;LG.rev+=b;toast('📊 会議・研修 +¥'+fmt(b))}}
 function mkFac(k,g){const wt=M(0x6ac3d8,.1,.2,{transparent:true,opacity:.8,emissive:0x0a4a5a,emissiveIntensity:.4,depthWrite:false});
+ if(ROOF[k]){rfG.add(g);g.position.set(0,0,0);
+ if(k=='rpool'){box(5.2,.25,2.8,M(0xe9e2d3,.9),-2.8,.12,0,g);const w=new T.Mesh(new T.BoxGeometry(4.4,.05,2),wt);w.position.set(-2.8,.27,0);g.add(w);[[-4.6,1.9],[-3.4,1.9]].forEach(a=>box(.6,.15,1.4,white,a[0],.3,a[1],g));box(.08,1.8,.08,gold,-1.3,1.1,1.8,g);const pa=new T.Mesh(new T.ConeGeometry(.9,.4,12),M(0xd8503a));pa.position.set(-1.3,2,1.8);g.add(pa)}
+ if(k=='rbar'){box(2.8,1,.6,M(0x4a2f20),3.2,.5,-1.8,g);box(2.9,.06,.7,gold,3.2,1.03,-1.8,g);[2.4,3.2,4].forEach(a=>box(.35,.6,.35,M(0x7a2f2f),a,.3,-1,g));box(3.4,.1,2,M(0x14161e),3.2,2.6,-1.4,g);[2,4.4].forEach(a=>box(.08,2.6,.08,gold,a,1.3,-.5,g));const m=mkGuest();m.children[0].material=M(0x111111,.7);m.position.set(3.2,0,-2.5);g.add(m);fnpc.push(m)}
+ if(k=='rgarden'){for(let i=0;i<6;i++){box(1,.4,.8,M(0x8a6a4a),-5+i*2,.2,-2.4,g);ball(.5,M(i%2?0xf2a6c0:0x4f8f3f,.9),-5+i*2,.7,-2.4,g)}box(.1,2.2,.1,wood,-1,1.1,2.4,g);box(.1,2.2,.1,wood,1,1.1,2.4,g);box(2.4,.08,.7,wood,0,2.2,2.4,g)}
+ if(k=='rsolar'){for(let i=0;i<5;i++){const p=box(2,.08,1.2,M(0x1a2a4a,.2,.6),-4.5+i*2.2,.7,2.5,g);p.rotation.x=-.45}}
+ return}
  if(k=='bus'){busM=new T.Group();box(7,1.8,2.2,M(0x2a7fd4,.4,.3),0,1.4,0,busM);box(6.4,.7,2.25,M(0x1a2230,.2,.4),0,1.8,0,busM);[[-2.2,1],[2.2,1],[-2.2,-1],[2.2,-1]].forEach(p=>{const w=new T.Mesh(new T.CylinderGeometry(.45,.45,.3,14),M(0x111111));w.rotation.x=Math.PI/2;w.position.set(p[0],.45,p[1]);busM.add(w)});busM.position.set(10,0,17.7);scene.add(busM);return}
  if(k=='heli'){g.position.set(46,0,-17);const pd=new T.Mesh(new T.CylinderGeometry(3.2,3.2,.15,32),M(0x4a4f57,.9));pd.position.y=.08;g.add(pd);box(.3,.02,2,white,-.6,.17,0,g);box(.3,.02,2,white,.6,.17,0,g);box(1.2,.02,.3,white,0,.17,0,g);
   ball(.9,M(0xc0392b,.4,.3),0,1.2,0,g);box(2.6,.25,.25,M(0xc0392b),1.9,1.4,0,g);box(5,.06,.2,M(0x222222),0,2.2,0,g);box(.2,.06,5,M(0x222222),0,2.2,0,g);return}
- if(k=='ev'){g.position.set(30,0,-13);for(let i=-2;i<=2;i++){box(.3,1.2,.3,M(0x1a7f4b),0,.6,i*3.4,g);ball(.12,lamp,0,1.3,i*3.4,g)}return}
+ if(k=='ev'){g.position.set(30,0,-16);for(let i=-2;i<=2;i++){box(.3,1.2,.3,M(0x1a7f4b),0,.6,i*3.4,g);ball(.12,lamp,0,1.3,i*3.4,g)}return}
  if(k=='solar'){g.position.set(-33,0,-14);for(let a=0;a<4;a++)for(let b=0;b<3;b++){const p=box(2.4,.08,1.6,M(0x1a2a4a,.2,.6),a*2.6-3.9,.9,b*2.2,g);p.rotation.x=-.5;box(.1,.9,.1,M(0x777777),a*2.6-3.9,.45,b*2.2,g)}return}
  const P={spa:[-24,-11,7,3,5,0xe9dcc4,0x5a3a2a,'SPA'],gym:[-15,-11,6,3,4.5,0x4a5a6a,0x2a323c,'GYM'],bar:[-6,-14,5,3.2,4,0x3a2a22,0x1a1410,'BAR'],chapel:[5,-14,5,4,6,0xf4f1ea,0x8a8f98,'CHAPEL'],conf:[15,-13,8,3.5,5,0xb8c4d0,0x3a4a5a,'CONFERENCE'],shop:[-12.5,11.5,3,2.2,2,0xf4e6c8,0xc0392b,'SHOP'],cafe:[14,11.8,4,2.4,2.6,0xe8d8c0,0x6b4a2f,'CAFE'],kids:[-31,2,5,2.8,4,0xf2b6c8,0x3f8fd8,'KIDS']}[k];
  if(P){const[x,z,w,h,d,c,rc,t]=P;g.position.set(x,0,z);box(w,h,d,M(c,.85),0,h/2,0,g);box(w+.6,.3,d+.6,M(rc,.7),0,h+.15,0,g);
@@ -243,7 +256,7 @@ function mkFac(k,g){const wt=M(0x6ac3d8,.1,.2,{transparent:true,opacity:.8,emiss
   if(k=='bar')box(2,.3,.1,lamp,0,h-.4,d/2+.06,g);
   if(k=='conf')[-1,1].forEach(a=>box(.08,5,.08,gold,a*(w/2+.8),2.5,d/2,g));
   if(k=='shop')for(let i=0;i<6;i++)box(.5,.1,1.2,M(i%2?0xc0392b:0xf4f1ea),-1.25+i*.5,h-.1,d/2+.5,g)}
- else{g.position.set(-10,0,6.5);box(6,.1,3.2,M(0x4f8f3f,1),0,.05,0,g);const pd=new T.Mesh(new T.CylinderGeometry(1.1,1.1,.12,20),wt);pd.position.set(-1,.12,0);g.add(pd);
+ else{g.position.set(-17,0,7);box(6,.1,3.2,M(0x4f8f3f,1),0,.05,0,g);const pd=new T.Mesh(new T.CylinderGeometry(1.1,1.1,.12,20),wt);pd.position.set(-1,.12,0);g.add(pd);
   box(1.8,.12,.5,M(0xb03a2e),-1,.3,0,g);[[1.6,.9],[-2.3,-.9],[2.3,-.2]].forEach(a=>ball(.25,M(0x7a7f85,.9),a[0],.25,a[1],g));
   box(.2,1.2,.2,wood,2.2,.7,.6,g);ball(.9,M(0xf2a6c0,.9),2.2,1.8,.6,g)}}
 const pops=[],CN=140,cp=new Float32Array(CN*3),cc=new Float32Array(CN*3),cvl=new Float32Array(CN*3);let cfT=0,ac;
@@ -253,10 +266,10 @@ const cpts=new T.Points(cg,new T.PointsMaterial({size:.35,vertexColors:true}));c
 function confetti(){cfT=3;cpts.visible=true;for(let i=0;i<CN;i++){cp.set([(Math.random()-.5)*6,8+Math.random()*3,6+(Math.random()-.5)*3],i*3);cvl.set([(Math.random()-.5)*8,Math.random()*9,(Math.random()-.5)*6],i*3);const h=new T.Color().setHSL(Math.random(),.9,.6);cc.set([h.r,h.g,h.b],i*3)}}
 function pop(pos,t,col){const c=document.createElement('canvas');c.width=256;c.height=64;const x=c.getContext('2d');x.font='bold 40px sans-serif';x.textAlign='center';x.textBaseline='middle';x.lineWidth=6;x.strokeStyle='rgba(0,0,0,.6)';x.strokeText(t,128,34);x.fillStyle=col||'#ffe27a';x.fillText(t,128,34);
  const tx=new T.CanvasTexture(c);tx.encoding=T.sRGBEncoding;const sp=new T.Sprite(new T.SpriteMaterial({map:tx,transparent:true,depthTest:false}));sp.scale.set(3,.75,1);sp.position.set(pos.x,pos.y+1.8,pos.z);sp.renderOrder=10;scene.add(sp);pops.push({sp,t:0})}
-function popTick(dt){fnpc.forEach((m,i)=>{m.children[0].rotation.z=Math.sin(performance.now()/500+i)*.06});for(let i=pops.length-1;i>=0;i--){const p=pops[i];p.t+=dt;p.sp.position.y+=dt*1.2;p.sp.material.opacity=Math.max(0,1-p.t/1.8);if(p.t>1.8){scene.remove(p.sp);pops.splice(i,1)}}
+function popTick(dt){rfG.position.y=(nF+1)*FH+.18;fnpc.forEach((m,i)=>{m.children[0].rotation.z=Math.sin(performance.now()/500+i)*.06});for(let i=pops.length-1;i>=0;i--){const p=pops[i];p.t+=dt;p.sp.position.y+=dt*1.2;p.sp.material.opacity=Math.max(0,1-p.t/1.8);if(p.t>1.8){scene.remove(p.sp);pops.splice(i,1)}}
  if(cfT>0){cfT-=dt;for(let i=0;i<CN;i++){cvl[i*3+1]-=dt*9;cp[i*3]+=cvl[i*3]*dt;cp[i*3+1]+=cvl[i*3+1]*dt;cp[i*3+2]+=cvl[i*3+2]*dt}cg.attributes.position.needsUpdate=true;if(cfT<=0)cpts.visible=false}}
 function chkLvl(){const l=lvlOf(totRev);if(l>lvl){lvl=l;const b=l*30000;money+=b;toast('🎉 ホテルランクUP! Lv.'+l+' ボーナス ¥'+fmt(b));confetti();[523,659,784,1047].forEach((f,i)=>setTimeout(()=>beep(f,.2),i*120))}}
-function cheer(q,amt,sat){const p0=q.m.position;if(pops.length<30){pop(p0,'💰+¥'+fmt(amt));pop({x:p0.x,y:p0.y+.9,z:p0.z},sat>.7?'😊':sat<.4?'😠':'🙂')}beep(1175,.08);combo=sat>.65?combo+1:0;
+function cheer(q,amt,sat){q.sat=sat;q.amt=amt;const p0=q.m.position;if(pops.length<30){pop(p0,'💰+¥'+fmt(amt));pop({x:p0.x,y:p0.y+.9,z:p0.z},sat>.7?'😊':sat<.4?'😠':'🙂')}beep(1175,.08);combo=sat>.65?combo+1:0;
  if(combo>1){const tp=Math.round(amt*Math.min(.3,combo*.02));money+=tp;LG.rev+=tp;totRev+=tp;if(pops.length<30)pop(p0,'💴チップ+¥'+fmt(tp),'#9cffb0');mis('t',1)}
  if(q.s.seg&&q.s.seg.n=='VIP'&&Math.random()<.25){money+=30000;brand=Math.min(100,brand+8);toast('🌟 有名人が宿泊! SNSで話題に +¥30,000');confetti();beep(1568,.3)}
  mis('n',1);if(sat>.7)mis('h',1);mis('r',amt);chkLvl()}
@@ -268,11 +281,11 @@ function life(q,g){const s=q.s,m=q.m,O=s.ox||0,hr=(day%1)*24,night=hr>=22||hr<7;
  const t=q.tg||[m.position.x,m.position.y,m.position.z],dx=t[0]-m.position.x,dy=t[1]-m.position.y,dz=t[2]-m.position.z,d=Math.hypot(dx,dy,dz),st=1.3*g;
  if(d>.03){const k=Math.min(1,st/d);m.position.x+=dx*k;m.position.y+=dy*k;m.position.z+=dz*k;if(q.act=='walk')m.rotation.y=Math.atan2(dx,dz)}else if(q.act=='tv')m.rotation.y=Math.PI/2;
  m.rotation.x=q.act=='sleep'&&d<.5?-Math.PI/2:0}
-function buildAn(p){const g=new T.Group();g.position.set(p.x,0,0);scene.add(g);const aS=p.an={nF:0,shaft:null,roof:null,g},BX=p.x-Math.sign(p.x)*8.5,sv=hotel;hotel=g;
+function buildAn(p){const g=new T.Group();g.position.set(p.x,0,0);scene.add(g);const aS=p.an={nF:0,shaft:null,roof:null,g},BX=p.x-Math.sign(p.x)*13,sv=hotel;hotel=g;
  box(W+.6,.25,D+.6,slab,0,0,0);box(W,FH,.2,wall,0,FH/2,-D/2);box(.2,FH,D,wall,-W/2,FH/2,0);box(.2,FH,D,wall,W/2,FH/2,0);box(W+.6,.06,D+.6,M(0xcbbfa8,.35,.1),0,.14,0);
- [-3.6,3.6].forEach(x=>{const p=new T.Mesh(new T.PlaneGeometry(4.8,FH-.2),glass);p.position.set(x,FH/2,D/2);g.add(p);box(4.8,.1,.1,gold,x,FH-.1,D/2)});
+ [-7.5,-3.6,3.6,7.5].forEach(x=>{const w2=Math.abs(x)>5?3:4.8,p=new T.Mesh(new T.PlaneGeometry(w2,FH-.2),glass);p.position.set(x,FH/2,D/2);g.add(p);box(w2,.1,.1,gold,x,FH-.1,D/2)});
  box(.3,FH,.3,gold,-W/2,FH/2,D/2);box(.3,FH,.3,gold,W/2,FH/2,D/2);box(.2,FH,.2,gold,0,FH/2,D/2);[-2.6,0].forEach(x=>{box(1.8,.45,.8,M(0x2f4a5a,.8),x+1,.4,-1.5);box(1.8,.5,.2,M(0x2f4a5a,.8),x+1,.8,-1.9)});
- box(4.6,.2,2.2,slab,BX,.1,0,scene);box(4.6,.2,2.2,slab,BX,FH,0,scene);[-1.1,1.1].forEach(z=>{const p=new T.Mesh(new T.PlaneGeometry(4.6,FH-.3),glass);p.position.set(BX,FH/2,z);scene.add(p)});
+ box(7.6,.2,2.2,slab,BX,.1,0,scene);box(7.6,.2,2.2,slab,BX,FH,0,scene);[-1.1,1.1].forEach(z=>{const p=new T.Mesh(new T.PlaneGeometry(7.6,FH-.3),glass);p.position.set(BX,FH/2,z);scene.add(p)});
  plane(8,6,0xc9c3b6,p.x,6.5,.03);hotel=sv}
 function addAn(p){const aS=p.an,sv=[nF,shaft,roof,hotel,OX];nF=aS.nF;shaft=aS.shaft;roof=aS.roof;hotel=aS.g;OX=p.x;addFloor();aS.nF=nF;aS.shaft=shaft;aS.roof=roof;[nF,shaft,roof,hotel,OX]=sv;bF()}
 function furnishFac(s){const k=s.fac;if(s.g)s.par.remove(s.g);const g=s.g=new T.Group();g.position.set(s.cx,s.y,0);s.par.add(g);s.hit.material.opacity=0;
@@ -290,10 +303,78 @@ function furnishFac(s){const k=s.fac;if(s.g)s.par.remove(s.g);const g=s.g=new T.
  if(k=='shop'){[-1,1].forEach(a=>{B(.35,1.8,3.2,0x8a6a4a,a*1.1,.9,-1);for(let i=0;i<8;i++)B(.2,.25,.3,[0xe74c3c,0xf1c40f,0x2ecc71,0x3498db][i%4],a*1.1+(a<0?.2:-.2),.4+(i>>2)*.6,-2.4+(i%4)*.8)});B(1,.9,.5,0x3a2a20,0,.45,.5);N(0,1.1,Math.PI,0xc0392b);N(.2,-1,0,0x2f4a5a)}
  if(k=='kids'){B(2.2,.4,2,0xff8fab,0,.2,-1.3);for(let i=0;i<14;i++)ball(.16,M([0xe74c3c,0xf1c40f,0x2ecc71,0x3498db][i%4],.5),-.9+(i%5)*.45,.5,-2+Math.floor(i/5)*.7,g);N(-.3,-1.3,0,0xf39c12,.6).position.y=.35;N(.5,-.8,0,0x16a085,.6).position.y=.35;B(.7,.08,1.6,0xe84393,1.1,.9,.4).rotation.x=.5;N(0,1.2,Math.PI,0x2f4a5a)}
  if(k=='cafe'){B(2.6,1,.5,0x5a3b28,0,.5,-2.3);B(.5,.4,.4,0xb0b0b0,.7,1.2,-2.3);N(0,-3,0,0x6b4a2f);[-.8,.7].forEach(a=>{B(.7,.05,.7,0xf4f1ea,a,.7,.7);B(.07,.65,.07,0x555555,a,.35,.7);N(a,1.3,Math.PI,0x7a3b3b)})}}
-const PL=[-17,17,-34,34,-51,51].map(x=>({x,own:0,an:null,pad:null})),landPrice=p=>Math.round(150000*(1+.25*(Math.abs(p.x)/17-1))*landIdx/1000)*1000;
-function markLand(p){if(p.pad)scene.remove(p.pad);const g=p.pad=new T.Group();scene.add(g);const m=new T.Mesh(new T.PlaneGeometry(14,10),M(p.own?0xb9b4a6:0x6f9a4f,.95));m.rotation.x=-Math.PI/2;m.position.set(p.x,.035,0);m.receiveShadow=true;g.add(m);
+const PL=[-26,26,-52,52,-78,78].map(x=>({x,own:0,an:null,pad:null})),landPrice=p=>Math.round(150000*(1+.25*(Math.abs(p.x)/26-1))*landIdx/1000)*1000;
+function markLand(p){if(p.pad)scene.remove(p.pad);const g=p.pad=new T.Group();scene.add(g);const m=new T.Mesh(new T.PlaneGeometry(22,10),M(p.own?0xb9b4a6:0x6f9a4f,.95));m.rotation.x=-Math.PI/2;m.position.set(p.x,.035,0);m.receiveShadow=true;g.add(m);
  if(!p.own){const c=document.createElement('canvas');c.width=256;c.height=96;const x=c.getContext('2d');x.fillStyle='#c0392b';x.fillRect(0,0,256,96);x.fillStyle='#fff';x.font='bold 40px sans-serif';x.textAlign='center';x.textBaseline='middle';x.fillText('FOR SALE',128,48);
   const tx=new T.CanvasTexture(c);tx.encoding=T.sRGBEncoding;const s=new T.Mesh(new T.PlaneGeometry(2.6,.98),new T.MeshBasicMaterial({map:tx}));s.position.set(p.x,1.6,4.6);g.add(s);box(.12,1.6,.12,wood,p.x-1,.8,4.55,g);box(.12,1.6,.12,wood,p.x+1,.8,4.55,g)}}
+const ROOF={rpool:1,rbar:1,rgarden:1,rsolar:1},rfG=new T.Group(),CQ=[];scene.add(rfG);
+function bfn(key){if(key=='m')return()=>addFloor();const p=PL.find(q=>q.x==key);return()=>{if(!p.an)buildAn(p);addAn(p);toast('🏨 別館が完成!');confetti();beep(659,.2)}}
+function startBuild(label,key,days,p,quiet){const top=((p?(p.an?p.an.nF:0):nF)+1)*FH,m=new T.Mesh(new T.BoxGeometry(W+.8,FH,D+.6),new T.MeshBasicMaterial({color:0xffa500,wireframe:true}));m.position.set(p?p.x:0,top+FH/2,0);scene.add(m);CQ.push({label,key,fn:bfn(key),left:days,d0:days,m,ap:0});if(!quiet)toast('🏗 '+label+' 建築確認を申請（完成まで約'+days+'日）')}
+function restoreBuild(v){startBuild(v[3],v[0],v[2],v[0]=='m'?null:PL.find(q=>q.x==v[0]),1);CQ[CQ.length-1].left=v[1]}
+function buildTick(){for(let i=CQ.length-1;i>=0;i--){const q=CQ[i];q.left--;if(!q.ap&&q.left<=q.d0*.6){q.ap=1;toast('📑 建築確認が下りました。着工!')}if(q.left<=0){scene.remove(q.m);CQ.splice(i,1);q.fn()}}}
+function screen(){const lv=PL.reduce((a,p)=>a+(p.own?landPrice(p):0),0),col=lv*.7+(assets()-lv*.8)*.5;
+ if(grade()=='D')return{ok:0,reason:'信用格付Dのため'};if(hist.length>=2&&hist.slice(-2).every(v=>v<0))return{ok:0,reason:'直近2期連続の赤字'};if(debt>Math.max(worth(),1)*1.5)return{ok:0,reason:'負債が過大（返済能力不足）'};
+ const amt=Math.floor((col-debt)/100000)*100000;return amt<100000?{ok:0,reason:'担保評価額が不足（土地・建物）'}:{ok:1,amt:Math.min(amt,3000000)}}
+const blds=()=>[{n:'本館',ox:0}].concat(PL.filter(p=>p.an).map((p,i)=>({n:'別館'+(i+1),ox:p.x}))).map(b=>({n:b.n,ox:b.ox,rooms:slots.filter(s=>(s.ox||0)==b.ox&&s.type).length,fac:slots.filter(s=>(s.ox||0)==b.ox&&s.fac).length}));
+const bal=()=>blds().map(b=>'<div style="display:flex;justify-content:space-between"><span>'+b.n+'</span><b>客室'+b.rooms+'／施設'+b.fac+(b.rooms>=8&&!b.fac?' ⚠施設不足':'')+'</b></div>').join('');
+const fxB=o=>{let t=0;Object.keys(FD).forEach(k=>{if(!F[k])return;const any=slots.some(x=>x.fac==k),here=slots.some(x=>x.fac==k&&(x.ox||0)==o);t+=FD[k].sat*((!any||here)?1:.5)});const rm=slots.filter(x=>(x.ox||0)==o&&x.type).length,fc=slots.filter(x=>(x.ox||0)==o&&x.fac).length;return t-(rm>=8&&!fc?.05:0)};
+function guestInfo(q){const e=$('sheet');e.style.display='block';q.name=q.name||rnd(['田中','佐藤','鈴木','高橋','伊藤','渡辺','山本','中村','小林','加藤'])+' 様';const s=q.s,sg=s.seg||{n:'-'},row=(a,b)=>'<div style="display:flex;justify-content:space-between"><span>'+a+'</span><b>'+b+'</b></div>';
+ e.innerHTML='<h3>🧳 '+(sg.n=='インバウンド'?'🌏 ':'')+q.name+'</h3>'+row('客層',sg.n)+row('部屋',s.f+'階 '+(s.ox?'別館 ':'')+NAME[s.type])+row('宿泊',(s.nt||'-')+'泊')+row('支払',q.amt?'¥'+fmt(q.amt):'-')+row('満足度',q.sat==null?'-':Math.round(q.sat*100)+'%')+row('いま',{sleep:'😴 就寝中',tv:'📺 テレビ',walk:'🚶 部屋で過ごす'}[q.act]||(q.st=='in'?'🚶 入館中':'🚶 退館中'))+row('移動手段',q.car?'🚗 車':'🚶 徒歩・公共交通')+'<div class="r" style="margin-top:8px"><button data-c>閉じる</button></div>';
+ e.onclick=ev=>{if(ev.target.closest('button[data-c]'))e.style.display='none'}}
+let ST={ipo:0,sh:10000,price:0,own:100,ratio:0,sent:1,hist:[],mt:0};
+const fair=()=>(worth()*.6+Math.max(0,LP?LP.prof:0)*12)/ST.sh;
+function stockTick(di){if(!ST.ipo)return;const pr=ST.price;ST.sent=Math.max(.6,Math.min(1.5,ST.sent+(Math.random()-.5)*.06+(rating-3.5)*.002));
+ ST.price=Math.max(50,pr+(fair()*ST.sent-pr)*.12+pr*(Math.random()-.5)*.03);ST.hist.push(Math.round(ST.price));if(ST.hist.length>30)ST.hist.shift();
+ const ch=ST.price/pr-1;if(Math.abs(ch)>.08)toast((ch>0?'📈 株価急騰 +':'📉 株価急落 ')+(ch*100).toFixed(1)+'%');
+ if(ST.own<51&&ST.price<fair()*.75&&Math.random()<.05)tob()}
+function divPay(p){if(!ST.ipo)return;money-=50000;LG.exp+=50000;if(p>0&&ST.ratio){const d=Math.round(p*ST.ratio*(1-ST.own/100));money-=d;toast('💴 配当 ¥'+fmt(d)+' を株主へ支払い');ST.sent=Math.min(1.5,ST.sent+ST.ratio*.1)}
+ if(++ST.mt%4==0){if(ST.own<50&&ST.ratio<.2){ST.sent=Math.max(.6,ST.sent-.1);toast('📢 株主総会：物言う株主が増配を要求')}else toast('🏛 株主総会：経営陣が信任されました')}}
+function tob(){const e=$('sheet');e.style.display='block';const o=Math.round(ST.price*1.3),cost=Math.round(ST.price*1.3*ST.sh*.15);
+ e.innerHTML='<h3>⚔ 敵対的買収（TOB）提案</h3><div>1株 ¥'+fmt(o)+'（現在値の+30%）で買い付けの提案です。</div><div class="r" style="margin-top:8px"><button data-a>受け入れて売却する</button><button data-d>自社株買いで防衛 ¥'+fmt(cost)+'</button><button data-p>ポイズンピルを発動 ¥200,000</button></div>';
+ const end=()=>{spd=0;toast('🏁 売却完了！ あなたの売却益 ¥'+fmt(o*ST.sh*ST.own/100))};
+ e.onclick=q=>{const b=q.target.closest('button');if(!b)return;const d=b.dataset;e.style.display='none';
+  if(d.a!==undefined)end();
+  if(d.d!==undefined){if(money<cost){toast('資金不足で防衛失敗…');end()}else{money-=cost;ST.own=Math.min(100,ST.own+15);toast('🛡 買収を防衛!')}}
+  if(d.p!==undefined){if(money<200000){end()}else{money-=200000;if(Math.random()<.6){ST.sent=Math.max(.6,ST.sent-.1);toast('🛡 ポイズンピルで買収阻止')}else{toast('防衛失敗…');end()}}}}}
+function sparkP(){const h=ST.hist;if(h.length<2)return'–';const mn=Math.min(...h),mx=Math.max(...h,mn+1);return h.map(v=>'▁▂▃▄▅▆▇█'[Math.min(7,Math.floor((v-mn)/(mx-mn)*7.99))]).join('')}
+function stockMenu(){const e=$('sheet');e.style.display='block';const y=v=>'¥'+fmt(v),row=(a,b)=>'<div style="display:flex;justify-content:space-between"><span>'+a+'</span><b>'+b+'</b></div>';
+ if(!ST.ipo){const r2=hist.length>=2&&hist.slice(-2).every(v=>v>0),ok=worth()>=3e6&&grade()!='D'&&rating>=3.5&&r2;
+  e.innerHTML='<h3>📈 株式上場（IPO）</h3>'+row('純資産 ≥ ¥3,000,000',worth()>=3e6?'✅':'❌')+row('信用格付 D以外',grade()!='D'?'✅':'❌')+row('評価 戵3.5以上',rating>=3.5?'✅':'❌')+row('直近2期連続黒字',r2?'✅':'❌')+'<div class="r" style="margin-top:8px">'+(ok?'<button data-i>上場を申請（40%を公募）</button>':'<button disabled>上場審査の条件を満たしていません</button>')+'<button data-c>閉じる</button></div>'}
+ else e.innerHTML='<h3>📈 株式（上場企業）</h3>'+row('株価',y(ST.price))+row('時価総額',y(ST.price*ST.sh))+row('あなたの持株比率',ST.own.toFixed(1)+'%')+row('投資家心理',(ST.sent*100|0)+'%')+row('配当性向',Math.round(ST.ratio*100)+'%')+'<div style="font-size:20px;letter-spacing:2px;margin-top:6px">'+sparkP()+'</div><div class="r" style="margin-top:8px"><button data-r>配当性向を変更（0→20→40→60%）</button><button data-n>増資（20%の新株を発行）</button><button data-b>自社株買い（+5%）'+y(Math.round(ST.price*1.03*ST.sh*.05))+'</button><button data-c>閉じる</button></div>';
+ e.onclick=q=>{const b=q.target.closest('button');if(!b)return;const d=b.dataset;if(d.c!==undefined){e.style.display='none';return}
+  if(d.i!==undefined){ST.ipo=1;ST.price=Math.max(50,Math.round(worth()*1.3/ST.sh));ST.own=60;const c=Math.round(ST.sh*.4*ST.price*.95);money+=c;ST.hist=[Math.round(ST.price)];toast('🔔 上場! 調達 ¥'+fmt(c));confetti();beep(1047,.3)}
+  if(d.r!==undefined)ST.ratio=ST.ratio>=.6?0:Math.round((ST.ratio+.2)*10)/10;
+  if(d.n!==undefined){const n=ST.sh*.2,c=Math.round(n*ST.price*.95);money+=c;ST.own=ST.own*ST.sh/(ST.sh+n);ST.sh+=n;ST.price*=.97;toast('💹 増資 ¥'+fmt(c)+' 調達（持株比率低下）')}
+  if(d.b!==undefined){const c=Math.round(ST.price*1.03*ST.sh*.05);if(ST.own>=95)return toast('買える株がありません');if(money<c)return toast('資金不足');money-=c;ST.own=Math.min(100,ST.own+5);ST.price*=1.02;toast('自社株を取得 持株+5%')}
+  stockMenu();hud()}}
+const BZ=[{k:'resto',n:'🍜 レストランチェーン',c:400000,inc:14000,up:3500,col:0xc0392b},{k:'travel',n:'🧳 旅行代理店',c:300000,inc:9000,up:2500,col:0x2980b9},{k:'rent',n:'🏘 賃貸マンション',c:900000,inc:22000,up:4000,col:0x7f8c8d},{k:'golf',n:'⛳ ゴルフ場',c:1200000,inc:30000,up:9000,col:0x27ae60},{k:'wed',n:'💍 ブライダル会社',c:500000,inc:12000,up:3500,col:0xe84393},{k:'taxi',n:'🚕 ハイヤー・タクシー',c:350000,inc:10000,up:3000,col:0xf1c40f},{k:'conv',n:'🏪 コンビニ',c:250000,inc:8000,up:2500,col:0x16a085},{k:'park',n:'🎡 テーマパーク',c:2500000,inc:70000,up:25000,col:0x8e44ad},{k:'mna',n:'🏨 提携ホテル（M&A）',c:3000000,inc:80000,up:30000,col:0x34495e}];
+let BS={};const BM={},bz=k=>BS[k]?BS[k].lvl:0,bizVal=()=>BZ.reduce((a,b)=>a+(BS[b.k]?b.c*BS[b.k].lvl*.8:0),0);
+function bizMesh(k){const b=BZ.find(x=>x.k==k),i=BZ.indexOf(b),l=BS[k].lvl;if(BM[k])scene.remove(BM[k]);const g=BM[k]=new T.Group();g.position.set(-44+i*11,0,-34);scene.add(g);
+ const h=3+l*2.2;box(8,h,6,M(b.col,.7),0,h/2,0,g);box(8.6,.3,6.6,M(0x333a44,.7),0,h+.15,0,g);
+ for(let r=0;r<l+1;r++)for(let c=0;c<3;c++){const w=new T.Mesh(new T.PlaneGeometry(1.5,1.1),glass);w.position.set(-2.4+c*2.4,1.6+r*2,3.02);g.add(w)}
+ const cv=document.createElement('canvas');cv.width=256;cv.height=64;const x=cv.getContext('2d');x.fillStyle='#14161e';x.fillRect(0,0,256,64);x.fillStyle='#e8c070';x.font='bold 26px sans-serif';x.textAlign='center';x.textBaseline='middle';x.fillText(b.n.replace(/^\S+ /,''),128,34);
+ const tx=new T.CanvasTexture(cv);tx.encoding=T.sRGBEncoding;const sg=new T.Mesh(new T.PlaneGeometry(6,1.5),new T.MeshBasicMaterial({map:tx}));sg.position.set(0,h+1.2,3.1);g.add(sg);
+ if(k=='park'){const t=new T.Mesh(new T.TorusGeometry(3,.12,8,32),M(0xffffff));t.position.set(0,h+4,0);g.add(t)}
+ if(k=='golf'){box(8,.06,8,M(0x3fa34d,1),0,.04,6,g);box(.05,2,.05,white,2,1,7,g);box(.6,.4,.02,M(0xc0392b),2.3,1.8,7,g)}
+ if(k=='taxi')[-2,0,2].forEach(a=>box(1.8,.6,.9,M(0xf1c40f,.4),a,.35,4.6,g))}
+function bizTick(){const sn=season,wk=(day|0)%7>4;
+ BZ.forEach(b=>{const s=BS[b.k];if(!s)return;const l=s.lvl;let m=(.7+Math.random()*.6)*(1+brand/300);
+  if(b.k=='golf')m*=[1.2,.8,1.2,.5][sn]*(wx==2?.4:1);if(b.k=='park')m*=[1.1,1.5,1,.6][sn]*(wx==2?.5:1);if(['golf','park','resto'].includes(b.k)&&wk)m*=1.15;
+  if(b.k=='rent')m*=landIdx;if(b.k=='mna')m*=RV*(rating/3.5);if(b.k=='travel')m*=(1+hStars()*.04);
+  m*=.5+.5*Math.min(1,ev.m);if(s.dmg>0){m*=.4;s.dmg--}
+  const rev=b.inc*(1+.55*(l-1))*m,up=b.up*(1+.5*(l-1));money+=rev-up;LG.rev+=rev;LG.exp+=up;LG.biz=(LG.biz||0)+rev-up;
+  if(b.k=='resto')brand=Math.min(100,brand+.15*l);
+  const r=Math.random();if(r<.012){s.dmg=3+(Math.random()*4|0);toast('⚠ '+b.n+' で不祥事・事故 営業縮小')}else if(r<.02){const bn=Math.round(b.inc*3);money+=bn;LG.rev+=bn;toast('🌟 '+b.n+' が大ヒット! +¥'+fmt(bn))}})}
+function bizMenu(){const e=$('sheet');e.style.display='block';const y=v=>'¥'+fmt(Math.round(v));let tot=0;
+ const rows=BZ.map(b=>{const s=BS[b.k];if(s){const l=s.lvl,inc=b.inc*(1+.55*(l-1))-b.up*(1+.5*(l-1));tot+=inc;return '<button data-f="'+b.k+'">'+b.n+' Lv.'+l+'　日次純益 約'+y(inc)+(s.dmg>0?' ⚠':'')+'</button>'+(l<3?'<button data-u="'+b.k+'">　↑ アップグレード '+y(b.c*.8*l)+'</button>':'')+'<button data-s="'+b.k+'">　売却 '+y(b.c*l*.56)+'</button>'}
+  return '<button data-b="'+b.k+'">'+b.n+'　取得 '+y(b.c)+'　日次純益 約'+y(b.inc-b.up)+'</button>'}).join('');
+ e.innerHTML='<h3>🧩 事業ポートフォリオ　純益(日) 約'+y(tot)+'</h3><div class="r">'+rows+'</div><div class="r" style="margin-top:8px"><button data-c>閉じる</button></div>';
+ e.onclick=q=>{const bt=q.target.closest('button');if(!bt)return;const d=bt.dataset;if(d.c!==undefined){e.style.display='none';return}
+  if(d.f!==undefined){const i=BZ.findIndex(x=>x.k==d.f);G={x:-44+i*11,y:4,z:-34,r:26};camMode=0;return}
+  if(d.b!==undefined){const b=BZ.find(x=>x.k==d.b);if(money<b.c)return toast('資金不足');money-=b.c;BS[b.k]={lvl:1,dmg:0};bizMesh(b.k);toast('🧩 '+b.n+'を取得!');confetti();beep(784,.2)}
+  if(d.u!==undefined){const b=BZ.find(x=>x.k==d.u),s=BS[b.k],c=b.c*.8*s.lvl;if(money<c)return toast('資金不足');money-=c;s.lvl++;bizMesh(b.k);toast(b.n+' Lv.'+s.lvl)}
+  if(d.s!==undefined){const b=BZ.find(x=>x.k==d.s),s=BS[b.k];money+=Math.round(b.c*s.lvl*.56);delete BS[b.k];scene.remove(BM[b.k]);delete BM[b.k];toast('💴 '+b.n+'を売却')}
+  bizMenu();hud()}}
 let dm={d:-1,list:[],c:{n:0,h:0,r:0,t:0},done:{}};
 const MP=[['チェックイン5人','n',5,30000],['好評価の客を3人','h',3,40000],['売上¥200,000','r',200000,50000],['チップを2回もらう','t',2,30000],['チェックイン10人','n',10,80000]];
 function newMissions(di){dm.d=di;dm.c={n:0,h:0,r:0,t:0};dm.done={};dm.list=[...MP].sort(()=>Math.random()-.5).slice(0,3)}
@@ -319,18 +400,18 @@ const stp=new Float32Array(600);for(let i=0;i<200;i++){const u=Math.random()*Mat
 const stg=new T.BufferGeometry();stg.setAttribute('position',new T.BufferAttribute(stp,3));const stars=new T.Points(stg,new T.PointsMaterial({color:0xffffff,size:.9,transparent:true,fog:false}));stars.frustumCulled=false;scene.add(stars);
 function spark(){if(!hist.length)return'–';const mx=Math.max(...hist.map(Math.abs),1);return hist.map(v=>v<0?'▾':'▁▂▃▄▅▆▇█'[Math.min(7,Math.floor(v/mx*7.99))]).join('')}
 function landMenu(){const e=$('sheet');e.style.display='block';
- e.innerHTML='<h3>土地・別館　地価指数 '+landIdx.toFixed(2)+'</h3><div class="r">'+PL.map((p,i)=>{const nm=(p.x<0?'左':'右')+(Math.abs(p.x)/17)+'区画',inn=PL.find(q=>q.x==p.x-Math.sign(p.x)*17);
+ e.innerHTML='<h3>土地・別館　地価指数 '+landIdx.toFixed(2)+'</h3><div class="r">'+PL.map((p,i)=>{const nm=(p.x<0?'左':'右')+(Math.abs(p.x)/26)+'区画',inn=PL.find(q=>q.x==p.x-Math.sign(p.x)*26);
   if(!p.own)return (!inn||inn.an)?'<button data-lb="'+i+'">'+nm+' 土地購入 ¥'+fmt(landPrice(p))+'</button>':'<button disabled>'+nm+'（内側の区画に別館建設後に購入可）</button>';
   if(!p.an)return '<button data-la="'+i+'">'+nm+' 別館を建設 ¥400,000</button><button data-ls="'+i+'">'+nm+' 土地を売却 ¥'+fmt(landPrice(p)*.8)+'</button>';
   return '<button data-la="'+i+'">'+nm+' 別館 '+p.an.nF+'階 増築 ¥'+fmt(60000*(p.an.nF+1))+'</button>'}).join('')+'</div><div class="r" style="margin-top:8px"><button data-c>閉じる</button></div>';
  e.onclick=q=>{const b=q.target.closest('button');if(!b)return;const d=b.dataset;if(d.c!==undefined){e.style.display='none';return}
   if(d.lb!==undefined){const p=PL[d.lb],c=landPrice(p);if(money<c)return toast('資金不足');money-=c;p.own=1;markLand(p);toast('🏞 土地を取得')}
   if(d.ls!==undefined){const p=PL[d.ls];money+=Math.round(landPrice(p)*.8);p.own=0;markLand(p);toast('💴 土地を売却')}
-  if(d.la!==undefined){const p=PL[d.la],c=p.an?60000*(p.an.nF+1):400000;if(p.an&&p.an.nF>=6)return toast('上限です');if(money<c)return toast('資金不足');money-=c;if(!p.an)buildAn(p);addAn(p);toast('🏨 別館が完成!');confetti();beep(659,.2)}
+  if(d.la!==undefined){const p=PL[d.la],c=p.an?60000*(p.an.nF+1):400000;if(p.an&&p.an.nF>=6)return toast('上限です');if(money<c)return toast('資金不足');if(CQ.some(q=>q.key==p.x))return toast('🏗 工事中です');money-=c;startBuild('別館 '+(p.an?p.an.nF+1:1)+'階',p.x,4+(p.an?p.an.nF:0),p)}
   landMenu();hud()}}
 let RV=1,busM=null,aS=null,landIdx=1,BRoff=0,FX=1,trn=0,overdue=0,hist=[],combo=0,totRev=0,lvl=0;const lvlOf=t=>Math.floor(Math.sqrt(t/60000));const INF=()=>1+.03*((day/40)|0);
 function review(s){const t=s>.8?['最高の滞在でした','スタッフが親切で感動','また泊まりたい']:s>.5?['まずまず快適','立地が良い','清潔でした']:['料金が高すぎる','部屋が古い','サービスが残念'];toast('💬 '+'★'.repeat(Math.round(1+4*s))+' 「'+rnd(t)+'」')}
-function daily2(di){if(dm.d!=di)newMissions(di);if(Math.random()<.08)askEvt();FX=Math.max(.6,Math.min(1.6,FX+(Math.random()-.5)*.06));landIdx=Math.max(.6,Math.min(2.2,landIdx*(1+(Math.random()-.48)*.03)));BRoff=Math.max(-.02,Math.min(.04,BRoff+(Math.random()-.5)*.004));specials(di);if(di%40==30)toast('🎌 大型連休スタート! 集客×1.4');RV=Math.max(.8,Math.min(1.35,RV+(Math.random()-.5)*.1));['clean','conc'].forEach(k=>{if(S[k]&&Math.random()<(.02+(occ()>S[k]*6?.03:0))*(1-.25*trn)){S[k]--;const i=sMesh.map(m=>m.userData.k).lastIndexOf(k);if(i>=0){scene.remove(sMesh[i]);sMesh.splice(i,1)}toast('👋 '+(k=='clean'?'清掃スタッフ':'コンシェルジュ')+'が退職しました')}});slots.forEach(s=>{if(s.type&&s.cond!=null)s.cond=Math.min(1,s.cond+.01*S.clean)});for(const k in ads)if(ads[k]>0&&!--ads[k])toast('📢 '+AD[k].n+'終了');brand=Math.max(0,brand-.6);
+function daily2(di){if(dm.d!=di)newMissions(di);buildTick();bizTick();stockTick(di);if(Math.random()<.08)askEvt();FX=Math.max(.6,Math.min(1.6,FX+(Math.random()-.5)*.06));landIdx=Math.max(.6,Math.min(2.2,landIdx*(1+(Math.random()-.48)*.03)));BRoff=Math.max(-.02,Math.min(.04,BRoff+(Math.random()-.5)*.004));specials(di);if(di%40==30)toast('🎌 大型連休スタート! 集客×1.4');RV=Math.max(.8,Math.min(1.35,RV+(Math.random()-.5)*.1));['clean','conc'].forEach(k=>{if(S[k]&&Math.random()<(.02+(occ()>S[k]*6?.03:0))*(1-.25*trn)){S[k]--;const i=sMesh.map(m=>m.userData.k).lastIndexOf(k);if(i>=0){scene.remove(sMesh[i]);sMesh.splice(i,1)}toast('👋 '+(k=='clean'?'清掃スタッフ':'コンシェルジュ')+'が退職しました')}});slots.forEach(s=>{if(s.type&&s.cond!=null)s.cond=Math.min(1,s.cond+.01*S.clean)});for(const k in ads)if(ads[k]>0&&!--ads[k])toast('📢 '+AD[k].n+'終了');brand=Math.max(0,brand-.6);
  const r=Math.random();wx=r<.7?0:r<.9?1:2;season=((di/20)|0)%4;
  gnd.material.color.setHex([0x6aa04a,0x5d8a45,0x8a7a45,0xe8eef2][season]);green.color.setHex([0x6fbf5a,0x3f7a3a,0xc0742a,0x9aa89a][season]);adScreen();
  ACH.forEach((a,i)=>{if(!ach[i]&&a[0]()){ach[i]=1;money+=a[2];toast('🏆 実績「'+a[1]+'」 +¥'+fmt(a[2]))}})}
@@ -353,16 +434,17 @@ function settle(){
  prof=LG.rev-ct-oc-LG.exp-LG.evt-it-pt-ip,tx=Math.max(0,Math.round(prof*.25)),rep=Math.min(debt,Math.round(debt*.1/1000)*1000);
  money-=ct+oc+it+pt+tx+ip+rep;debt-=rep;LG.int+=it;LG.tax=pt+tx;LG.ins=ip;LG.ct=ct;LG.oc=oc;
  if(money<0){const od=Math.round(-money*.1);money-=od;LG.int+=od}
- LP=Object.assign({},LG,{prof:prof-tx,rep});hist.push(Math.round(prof-tx));if(hist.length>12)hist.shift();overdue=money<0?overdue+1:0;
+ divPay(prof-tx);LP=Object.assign({},LG,{prof:prof-tx,rep});hist.push(Math.round(prof-tx));if(hist.length>12)hist.shift();overdue=money<0?overdue+1:0;
  if(overdue>=2){const p=PL.find(q=>q.own&&!q.an);if(p){const v=Math.round(landPrice(p)*.8);money+=v;p.own=0;markLand(p);toast('🏦 延滞により銀行が土地を差押え（¥'+fmt(v)+'で換金）')}else if(overdue>=3){spd=0;toast('💥 破産しました… 再読み込みでやり直し')}}LG={rev:0,exp:0,int:0,tax:0,ins:0,evt:0};
  toast('📊 決算 純利益 ¥'+fmt(prof-tx)+'（税 ¥'+fmt(pt+tx)+'）')}
 function finance(){const e=$('sheet');e.style.display='block';const L=LP,y=v=>'¥'+fmt(v),n=10-((day|0)%10);
  const row=(a,b)=>'<div style="display:flex;justify-content:space-between"><span>'+a+'</span><b>'+b+'</b></div>';
- e.innerHTML='<h3>経理・銀行</h3>'+row('純資産',y(worth()))+row('現金',y(money))+row('資産（簿価）',y(assets()))+row('借入残高',y(debt))+row('金利／決算',(rate()*100).toFixed(1)+'%')+row('信用格付',grade())+row('追加借入可能額',y(limit()))+row('為替（円安指数）',FX.toFixed(2))+row('地価指数',landIdx.toFixed(2))+row('競合ホテル相場',RV.toFixed(2)+'（自社 '+mult.toFixed(1)+'）')+row('物価指数',INF().toFixed(2))+row('次の決算まで',n+'日')+
- '<div style="font-size:20px;letter-spacing:2px;margin-top:8px">利益推移 '+spark()+'</div><h3 style="margin-top:10px">前期決算</h3>'+(L?row('売上',y(L.rev))+row('経費・人件費',y(L.exp))+row('損害',y(L.evt))+row('利息',y(L.int))+row('税金（固定資産税・法人税）',y(L.tax))+row('保険料',y(L.ins))+row('消費税・OTA手数料',y((L.ct||0)+(L.oc||0)))+row('稼働率',Math.round(100*(L.nights||0)/(L.av||1))+'%')+row('ADR／RevPAR',y((L.rev||0)/(L.nights||1))+' / '+y((L.rev||0)/(L.av||1)))+row('純利益',y(L.prof))+row('元本返済(10%)',y(L.rep)):'<small>まだ決算がありません（10日ごと）</small>')+
- '<div class="r" style="margin-top:8px"><button data-l>借りる ¥100,000</button><button data-r>返済 ¥100,000</button><button data-i>火災・事故保険：'+(ins?'加入中（タップで解約）':'未加入（¥6,000/決算）')+'</button><button data-c>閉じる</button></div>';
+ e.innerHTML='<h3>経理・銀行</h3>'+row('純資産',y(worth()))+row('現金',y(money))+row('資産（簿価）',y(assets()))+row('借入残高',y(debt))+row('金利／決算',(rate()*100).toFixed(1)+'%')+row('信用格付',grade())+row('追加借入可能額',y(limit()))+bal()+row('為替（円安指数）',FX.toFixed(2))+row('地価指数',landIdx.toFixed(2))+row('競合ホテル相場',RV.toFixed(2)+'（自社 '+mult.toFixed(1)+'）')+row('物価指数',INF().toFixed(2))+row('次の決算まで',n+'日')+
+ '<div style="font-size:20px;letter-spacing:2px;margin-top:8px">利益推移 '+spark()+'</div><h3 style="margin-top:10px">前期決算</h3>'+(L?row('売上',y(L.rev))+row('経費・人件費',y(L.exp))+row('損害',y(L.evt))+row('利息',y(L.int))+row('税金（固定資産税・法人税）',y(L.tax))+row('保険料',y(L.ins))+row('消費税・OTA手数料',y((L.ct||0)+(L.oc||0)))+row('他事業の純利益',y(L.biz||0))+row('稼働率',Math.round(100*(L.nights||0)/(L.av||1))+'%')+row('ADR／RevPAR',y((L.rev||0)/(L.nights||1))+' / '+y((L.rev||0)/(L.av||1)))+row('純利益',y(L.prof))+row('元本返済(10%)',y(L.rep)):'<small>まだ決算がありません（10日ごと）</small>')+
+ '<div class="r" style="margin-top:8px"><button data-sc>🏞 担保融資を申し込む（審査）</button><button data-l>借りる ¥100,000</button><button data-r>返済 ¥100,000</button><button data-i>火災・事故保険：'+(ins?'加入中（タップで解約）':'未加入（¥6,000/決算）')+'</button><button data-c>閉じる</button></div>';
  e.onclick=q=>{const b=q.target.closest('button');if(!b)return;const d=b.dataset;
   if(d.c!==undefined){e.style.display='none';return}
+  if(d.sc!==undefined){const r=screen();if(!r.ok){toast('❌ 審査否決：'+r.reason);return}money+=r.amt-Math.round(r.amt*.01);debt+=r.amt;toast('✅ 審査通過 ¥'+fmt(r.amt)+' 融資実行（手数料1%）')}
   if(d.l!==undefined){if(limit()<100000)return toast('融資枠不足（格付・担保）');money+=100000;debt+=100000}
   if(d.r!==undefined){const a=Math.min(100000,debt,Math.floor(money/1000)*1000);if(a<=0)return toast('返済できません');money-=a;debt-=a}
   if(d.i!==undefined)ins=ins?0:1;
@@ -390,14 +472,14 @@ function menu(){const e=$('sheet');e.style.display='block';
   if(d.tr!==undefined){const c=40000*(trn+1);if(trn>=3)return toast('最大です');if(money<c)return toast('資金不足');money-=c;LG.exp+=c;trn++;toast('🎓 研修完了 Lv.'+trn)}
   if(d.h!==undefined){const k=d.h;if(S[k]>=(k=='clean'?5:3))return toast('上限です');if(money<10000)return toast('資金不足');money-=10000;S[k]++;staffMesh(k)}
   menu();hud()}}
-function save(){if(noSave)return;try{localStorage.setItem('ght',JSON.stringify({money,rating,day,lastDay,mult,nF,F,S,debt,ins,LG,LP,ev,ads,brand,ach,RV,totRev,dm,trn,hist,overdue,FX,land:PL.map(p=>[p.own,p.an?p.an.nF:-1]),landIdx,BRoff,s:slots.filter(s=>s.type||s.fac).map(s=>[s.ox||0,s.f,s.i,s.type,s.lvl,s.cond,s.fac])}))}catch(e){}}
+function save(){if(noSave)return;try{localStorage.setItem('ght',JSON.stringify({money,rating,day,lastDay,mult,nF,F,S,debt,ins,LG,LP,ev,ads,brand,ach,RV,totRev,ver:2,BS,ST,cq:CQ.map(q=>[q.key,q.left,q.d0,q.label]),dm,trn,hist,overdue,FX,land:PL.map(p=>[p.own,p.an?p.an.nF:-1]),landIdx,BRoff,s:slots.filter(s=>s.type||s.fac).map(s=>[s.ox||0,s.f,s.i,s.type,s.lvl,s.cond,s.fac])}))}catch(e){}}
 function load(){try{const d=JSON.parse(localStorage.getItem('ght'));if(!d)return false;
  ({money,rating,day,lastDay,mult}=d);debt=d.debt||0;ins=d.ins||0;LG=d.LG||LG;LP=d.LP||null;ev=d.ev||ev;ads=d.ads||{};brand=d.brand||0;ach=d.ach||{};RV=d.RV||1;totRev=d.totRev||0;lvl=lvlOf(totRev);Object.assign(F,d.F);Object.assign(S,d.S);while(nF<d.nF)addFloor();
- if(d.land)d.land.forEach((v,i)=>{const p=PL[i];if(p&&v[0]){p.own=1;markLand(p);if(v[1]>=0){buildAn(p);while(p.an.nF<v[1])addAn(p)}}});else if(d.anx>=0){PL[0].own=1;markLand(PL[0]);buildAn(PL[0]);while(PL[0].an.nF<d.anx)addAn(PL[0])}landIdx=d.landIdx||1;BRoff=d.BRoff||0;dm=d.dm||dm;trn=d.trn||0;hist=d.hist||[];overdue=d.overdue||0;FX=d.FX||1;
- d.s.forEach((v,i)=>{let s,t,l,c,f;if(v.length>=7){s=slots.find(x=>(x.ox||0)==v[0]&&x.f==v[1]&&x.i==v[2]);t=v[3];l=v[4];c=v[5];f=v[6]}else{s=slots[i];t=v[0];l=v[1];c=v[2]}if(s&&(t||f)){s.type=t||0;s.lvl=l||0;s.cond=c;if(f){s.fac=f;furnishFac(s)}else furnish(s)}});Object.keys(IN).forEach(k=>{if(F[k]&&!slots.some(s=>s.fac==k)){F[k]=0;money+=FC[k]}});
+ if(d.land)d.land.forEach((v,i)=>{const p=PL[i];if(p&&v[0]){p.own=1;markLand(p);if(v[1]>=0){buildAn(p);while(p.an.nF<v[1])addAn(p)}}});else if(d.anx>=0){PL[0].own=1;markLand(PL[0]);buildAn(PL[0]);while(PL[0].an.nF<d.anx)addAn(PL[0])}BS=d.BS||{};Object.keys(BS).forEach(bizMesh);ST=d.ST||ST;if(d.cq)d.cq.forEach(restoreBuild);landIdx=d.landIdx||1;BRoff=d.BRoff||0;dm=d.dm||dm;trn=d.trn||0;hist=d.hist||[];overdue=d.overdue||0;FX=d.FX||1;
+ d.s.forEach((v,i)=>{let s,t,l,c,f;if(v.length>=7){s=slots.find(x=>(x.ox||0)==Math.round(v[0]*(d.ver==2?1:26/17))&&x.f==v[1]&&x.i==v[2]);t=v[3];l=v[4];c=v[5];f=v[6]}else{s=slots[i];t=v[0];l=v[1];c=v[2]}if(s&&(t||f)){s.type=t||0;s.lvl=l||0;s.cond=c;if(f){s.fac=f;furnishFac(s)}else furnish(s)}});Object.keys(IN).forEach(k=>{if(F[k]&&!slots.some(s=>s.fac==k)){F[k]=0;money+=FC[k]}});
  Object.keys(F).forEach(k=>F[k]&&!IN[k]&&buildFac(k));['clean','conc'].forEach(k=>{for(let i=0;i<S[k];i++)staffMesh(k)});return true}catch(e){return false}}
 addEventListener('resize',resize);resize();addFloor();PL.forEach(markLand);const ld=load();bF();hud();toast(ld?'セーブデータを読み込みました':'空き部屋をタップして客室を建てよう');
-$('bX').onclick=menu;$('bB').onclick=finance;addEventListener('pointerdown',()=>{try{ac=ac||new (window.AudioContext||window.webkitAudioContext)();ac.resume()}catch(e){}});$('bA').onclick=adMenu;$('bL').onclick=landMenu;$('bQ').onclick=mmenu;$('bM').onclick=bgm;$('bC').onclick=()=>{camMode=(camMode+1)%4;G=null;camQ=null;if(!camMode){C.tx=0;C.tz=0}$('bC').textContent='🎥 '+['自由','オービット','追跡','ドローン'][camMode]};setInterval(save,4000);addEventListener('visibilitychange',save);addEventListener('pagehide',save);
+$('bX').onclick=menu;$('bB').onclick=finance;addEventListener('pointerdown',()=>{try{ac=ac||new (window.AudioContext||window.webkitAudioContext)();ac.resume()}catch(e){}});$('bA').onclick=adMenu;$('bL').onclick=landMenu;$('bQ').onclick=mmenu;$('bS2').onclick=stockMenu;$('bY').onclick=bizMenu;$('bM').onclick=bgm;$('bC').onclick=()=>{camMode=(camMode+1)%4;G=null;camQ=null;if(!camMode){C.tx=0;C.tz=0}$('bC').textContent='🎥 '+['自由','オービット','追跡','ドローン'][camMode]};setInterval(save,4000);addEventListener('visibilitychange',save);addEventListener('pagehide',save);
 let last=performance.now();
 (function loop(now){requestAnimationFrame(loop);const dt=Math.min((now-last)/1000,.1);last=now;const g=dt*spd;
  if(g>0){sim(g);walk(g)}rainTick(dt);popTick(dt);if(busM)busM.position.x=((busM.position.x+60-dt*6)%120+120)%120-60;car.position.x=((car.position.x+60+dt*8)%120)-60;light();camTick(dt);setCam();hudT+=dt;if(hudT>.2){hudT=0;hud()}renderer.render(scene,cam)})(last);
