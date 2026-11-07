@@ -20,7 +20,7 @@ button:active{transform:scale(.96)}button.p{background:var(--ac);color:#fff}
 </style></head><body>
 <div class="bar" id="top"><div class="chip" id="cM"></div><div class="chip" id="cD"></div><div class="chip" id="cR"></div><div class="chip" id="cO"></div><div class="chip" id="cB"></div><div class="chip" id="cL"></div></div>
 <div id="toast"></div><div id="sheet"></div>
-<div class="bar" id="bot"><button class="p" id="bF"></button><button id="bP-">料金 −</button><button id="bP"></button><button id="bP+">料金 ＋</button><button id="bA">📢 CM</button><button id="bB">📊 経理</button><button id="bX">🏢 施設</button><button id="bS">▶ ×1</button></div>
+<div class="bar" id="bot"><button class="p" id="bF"></button><button id="bP-">料金 −</button><button id="bP"></button><button id="bP+">料金 ＋</button><button id="bL">🏞 土地</button><button id="bA">📢 CM</button><button id="bB">📊 経理</button><button id="bX">🏢 施設</button><button id="bS">▶ ×1</button></div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script>
 const T=THREE,SW=3,W=12,D=7,FH=3.2,MAXF=8,Y0=.1;
@@ -48,7 +48,7 @@ for(let i=-90;i<90;i+=6)plane(2.2,.18,0xeeeeee,i,19,.03);
 function tree(x,z,s){const g=new T.Group();g.position.set(x,0,z);g.scale.setScalar(s);
  const t=new T.Mesh(new T.CylinderGeometry(.2,.3,2,8),wood);t.position.y=1;t.castShadow=true;g.add(t);
  ball(1.3,green,0,3,0,g);ball(1,M(0x4b8a44,.9),.6,3.7,.3,g);scene.add(g)}
-[[-28,8],[-27,-4],[15,0],[20,13],[-10,-6],[10,-6],[-27,14],[32,-14],[-16,16],[17,15]].forEach(p=>tree(p[0],p[1],.9+Math.random()*.5));
+[[-28,8],[-27,-9],[15,-9],[20,13],[-10,-6],[10,-6],[-27,14],[44,-9],[-16,16],[17,15]].forEach(p=>tree(p[0],p[1],.9+Math.random()*.5));
 const car=new T.Group();box(3.4,.7,1.6,M(0xb3262c,.3,.5),0,.6,0,car);box(1.8,.6,1.4,M(0x222a33,.2,.3),-.1,1.2,0,car);
 [[-1.1,.7],[1.1,.7],[-1.1,-.7],[1.1,-.7]].forEach(p=>{const w=new T.Mesh(new T.CylinderGeometry(.35,.35,.3,14),M(0x111111));w.rotation.x=Math.PI/2;w.position.set(p[0],.35,p[1]);car.add(w)});
 car.position.set(-60,0,20);scene.add(car);
@@ -115,7 +115,7 @@ function mkGuest(){const g=new T.Group(),c=new T.Color().setHSL(Math.random(),.5
  [b,h,l].forEach(o=>{o.castShadow=true;g.add(o)});scene.add(g);return g}
 function path(s,car){const O=s.ox||0;const V=(x,y,z)=>new T.Vector3(x,y,z);
  const a=[V(rnd([-9,-5,5,9]),Y0,13),V(O,Y0,9),V(O,Y0,3.4),V(O-5.2,Y0,3.4),V(O-5.2,Y0,2.7),V(O-5.2,s.y,2.7),V(O+s.cx,s.y,2.7),V(O+s.cx,s.y,.4)];
- if(car)a.splice(0,1,V(20,Y0,2),V(10,Y0,7.5));return a}
+ if(car)a.splice(0,1,V(28,Y0,-3),V(28,Y0,9));return a}
 // ---- state
 let money=250000,rating=3.5,day=.33,lastDay=0,arr=0,spd=1,mult=1,hudT=0;
 const built=()=>slots.filter(s=>s.type).length;
@@ -181,8 +181,8 @@ function resize(){renderer.setSize(innerWidth,innerHeight);cam.aspect=innerWidth
 // ---- facilities, staff, save
 const F={rest:0,pool:0,park:0},S={clean:0,conc:0},FC={rest:120000,pool:200000,park:80000},sMesh=[];let noSave=0;
 let debt=0,ins=0,ev={n:'',u:0,m:1},LG={rev:0,exp:0,int:0,tax:0,ins:0,evt:0},LP=null,ads={},brand=0,wx=0,season=0,ach={};
-const assets=()=>.8*(slots.reduce((a,s)=>a+(s.type?COST[s.type]*(1+.6*(s.lvl-1)):0),0)+20000*(nF-1)*nF+F.rest*120000+F.pool*200000+F.park*80000+Object.keys(FD).reduce((a,k)=>a+(F[k]?FD[k].c:0),0));
-const worth=()=>money+assets()-debt,rate=()=>Math.max(.02,.065-rating*.008);
+const assets=()=>.8*(slots.reduce((a,s)=>a+(s.type?COST[s.type]*(1+.6*(s.lvl-1)):0),0)+20000*(nF-1)*nF+F.rest*120000+F.pool*200000+F.park*80000+PL.reduce((a,p)=>a+(p.own?landPrice(p)*1.25:0),0)+Object.keys(FD).reduce((a,k)=>a+(F[k]?FD[k].c:0),0));
+const worth=()=>money+assets()-debt,rate=()=>Math.max(.015,.065-rating*.008+BRoff);
 const grade=()=>{const r=debt/(assets()+1);return rating>=4&&r<.3?'A':rating>=3&&r<.5?'B':r<.7?'C':'D'};
 const limit=()=>grade()=='D'?0:Math.max(0,Math.floor((assets()*.7-debt)/100000)*100000);
 const AD={bb:{n:'看板広告',c:30000,d:5,m:1.15,b:5},net:{n:'ネット広告',c:50000,d:7,m:1.25,b:8},tv:{n:'TV CM',c:200000,d:10,m:1.6,b:25}},SM=[1.1,1.15,1,.85];
@@ -190,7 +190,7 @@ const adM=()=>Object.keys(ads).reduce((a,k)=>a*(ads[k]>0?AD[k].m:1),1);
 const parkCars=[];function pk(){slots.forEach(s=>{if(s.lm)s.lm.emissiveIntensity=s.rsv?(s.gst&&s.gst.act=='sleep'?.3:2.6):.1});const n=guests.filter(x=>x.car).length;parkCars.forEach((c,i)=>c.visible=i<n)}
 function mkCar(c){const g=new T.Group();box(3.4,.7,1.6,M(c,.3,.5),0,.6,0,g);box(1.8,.6,1.4,M(0x222a33,.2,.3),-.1,1.2,0,g);
  [[-1.1,.7],[1.1,.7],[-1.1,-.7],[1.1,-.7]].forEach(p=>{const w=new T.Mesh(new T.CylinderGeometry(.35,.35,.3,14),M(0x111111));w.rotation.x=Math.PI/2;w.position.set(p[0],.35,p[1]);g.add(w)});return g}
-function mkPark(g){g.position.set(26,0,0);box(14,.08,18,M(0x3a3d44,.95),0,.04,0,g);
+function mkPark(g){g.position.set(30,0,-13);box(14,.08,18,M(0x3a3d44,.95),0,.04,0,g);
  [-5,5].forEach(x=>{for(let i=0;i<9;i++)box(4.4,.02,.12,white,x,.1,-8.8+i*2.2,g)});
  for(let i=0;i<16;i++){const c=mkCar(rnd([0xb3262c,0x2a5da8,0xeeeeee,0x222222,0x2e8b57,0xd8a521]));c.position.set(i<8?-5:5,0,-7.7+(i%8)*2.2);c.visible=false;g.add(c);parkCars.push(c)}
  box(.15,3,.15,gold,-7,1.5,9.5,g);box(1.4,1.4,.1,M(0x1f5fbf),-7,3.4,9.5,g)}
@@ -228,9 +228,9 @@ function specials(di){if(F.chapel&&Math.random()<.2){const b=90000+(Math.random(
  if(F.conf&&di%7<5&&Math.random()<.4){const b=40000+(Math.random()*50000|0);money+=b;LG.rev+=b;toast('📊 会議・研修 +¥'+fmt(b))}}
 function mkFac(k,g){const wt=M(0x6ac3d8,.1,.2,{transparent:true,opacity:.8,emissive:0x0a4a5a,emissiveIntensity:.4,depthWrite:false});
  if(k=='bus'){busM=new T.Group();box(7,1.8,2.2,M(0x2a7fd4,.4,.3),0,1.4,0,busM);box(6.4,.7,2.25,M(0x1a2230,.2,.4),0,1.8,0,busM);[[-2.2,1],[2.2,1],[-2.2,-1],[2.2,-1]].forEach(p=>{const w=new T.Mesh(new T.CylinderGeometry(.45,.45,.3,14),M(0x111111));w.rotation.x=Math.PI/2;w.position.set(p[0],.45,p[1]);busM.add(w)});busM.position.set(10,0,17.7);scene.add(busM);return}
- if(k=='heli'){g.position.set(30,0,-17);const pd=new T.Mesh(new T.CylinderGeometry(3.2,3.2,.15,32),M(0x4a4f57,.9));pd.position.y=.08;g.add(pd);box(.3,.02,2,white,-.6,.17,0,g);box(.3,.02,2,white,.6,.17,0,g);box(1.2,.02,.3,white,0,.17,0,g);
+ if(k=='heli'){g.position.set(46,0,-17);const pd=new T.Mesh(new T.CylinderGeometry(3.2,3.2,.15,32),M(0x4a4f57,.9));pd.position.y=.08;g.add(pd);box(.3,.02,2,white,-.6,.17,0,g);box(.3,.02,2,white,.6,.17,0,g);box(1.2,.02,.3,white,0,.17,0,g);
   ball(.9,M(0xc0392b,.4,.3),0,1.2,0,g);box(2.6,.25,.25,M(0xc0392b),1.9,1.4,0,g);box(5,.06,.2,M(0x222222),0,2.2,0,g);box(.2,.06,5,M(0x222222),0,2.2,0,g);return}
- if(k=='ev'){g.position.set(26,0,0);for(let i=-2;i<=2;i++){box(.3,1.2,.3,M(0x1a7f4b),0,.6,i*3.4,g);ball(.12,lamp,0,1.3,i*3.4,g)}return}
+ if(k=='ev'){g.position.set(30,0,-13);for(let i=-2;i<=2;i++){box(.3,1.2,.3,M(0x1a7f4b),0,.6,i*3.4,g);ball(.12,lamp,0,1.3,i*3.4,g)}return}
  if(k=='solar'){g.position.set(-33,0,-14);for(let a=0;a<4;a++)for(let b=0;b<3;b++){const p=box(2.4,.08,1.6,M(0x1a2a4a,.2,.6),a*2.6-3.9,.9,b*2.2,g);p.rotation.x=-.5;box(.1,.9,.1,M(0x777777),a*2.6-3.9,.45,b*2.2,g)}return}
  const P={spa:[-24,-11,7,3,5,0xe9dcc4,0x5a3a2a,'SPA'],gym:[-15,-11,6,3,4.5,0x4a5a6a,0x2a323c,'GYM'],bar:[-6,-14,5,3.2,4,0x3a2a22,0x1a1410,'BAR'],chapel:[5,-14,5,4,6,0xf4f1ea,0x8a8f98,'CHAPEL'],conf:[15,-13,8,3.5,5,0xb8c4d0,0x3a4a5a,'CONFERENCE'],shop:[-12.5,11.5,3,2.2,2,0xf4e6c8,0xc0392b,'SHOP'],cafe:[14,11.8,4,2.4,2.6,0xe8d8c0,0x6b4a2f,'CAFE'],kids:[-31,2,5,2.8,4,0xf2b6c8,0x3f8fd8,'KIDS']}[k];
  if(P){const[x,z,w,h,d,c,rc,t]=P;g.position.set(x,0,z);box(w,h,d,M(c,.85),0,h/2,0,g);box(w+.6,.3,d+.6,M(rc,.7),0,h+.15,0,g);
@@ -267,13 +267,13 @@ function life(q,g){const s=q.s,m=q.m,O=s.ox||0,hr=(day%1)*24,night=hr>=22||hr<7;
  const t=q.tg||[m.position.x,m.position.y,m.position.z],dx=t[0]-m.position.x,dy=t[1]-m.position.y,dz=t[2]-m.position.z,d=Math.hypot(dx,dy,dz),st=1.3*g;
  if(d>.03){const k=Math.min(1,st/d);m.position.x+=dx*k;m.position.y+=dy*k;m.position.z+=dz*k;if(q.act=='walk')m.rotation.y=Math.atan2(dx,dz)}else if(q.act=='tv')m.rotation.y=Math.PI/2;
  m.rotation.x=q.act=='sleep'&&d<.5?-Math.PI/2:0}
-function buildAnnex(){const g=new T.Group();g.position.set(-17,0,0);scene.add(g);aS={nF:0,shaft:null,roof:null,g};const sv=hotel;hotel=g;
+function buildAn(p){const g=new T.Group();g.position.set(p.x,0,0);scene.add(g);const aS=p.an={nF:0,shaft:null,roof:null,g},BX=p.x-Math.sign(p.x)*8.5,sv=hotel;hotel=g;
  box(W+.6,.25,D+.6,slab,0,0,0);box(W,FH,.2,wall,0,FH/2,-D/2);box(.2,FH,D,wall,-W/2,FH/2,0);box(.2,FH,D,wall,W/2,FH/2,0);box(W+.6,.06,D+.6,M(0xcbbfa8,.35,.1),0,.14,0);
  [-3.6,3.6].forEach(x=>{const p=new T.Mesh(new T.PlaneGeometry(4.8,FH-.2),glass);p.position.set(x,FH/2,D/2);g.add(p);box(4.8,.1,.1,gold,x,FH-.1,D/2)});
  box(.3,FH,.3,gold,-W/2,FH/2,D/2);box(.3,FH,.3,gold,W/2,FH/2,D/2);box(.2,FH,.2,gold,0,FH/2,D/2);[-2.6,0].forEach(x=>{box(1.8,.45,.8,M(0x2f4a5a,.8),x+1,.4,-1.5);box(1.8,.5,.2,M(0x2f4a5a,.8),x+1,.8,-1.9)});
- box(4.6,.2,2.2,slab,-8.5,.1,0,scene);box(4.6,.2,2.2,slab,-8.5,FH,0,scene);[-1.1,1.1].forEach(z=>{const p=new T.Mesh(new T.PlaneGeometry(4.6,FH-.3),glass);p.position.set(-8.5,FH/2,z);scene.add(p)});
- plane(8,6,0xc9c3b6,-17,6.5,.03);hotel=sv}
-function addAnnexFloor(){const sv=[nF,shaft,roof,hotel,OX];nF=aS.nF;shaft=aS.shaft;roof=aS.roof;hotel=aS.g;OX=-17;addFloor();aS.nF=nF;aS.shaft=shaft;aS.roof=roof;[nF,shaft,roof,hotel,OX]=sv;bF()}
+ box(4.6,.2,2.2,slab,BX,.1,0,scene);box(4.6,.2,2.2,slab,BX,FH,0,scene);[-1.1,1.1].forEach(z=>{const p=new T.Mesh(new T.PlaneGeometry(4.6,FH-.3),glass);p.position.set(BX,FH/2,z);scene.add(p)});
+ plane(8,6,0xc9c3b6,p.x,6.5,.03);hotel=sv}
+function addAn(p){const aS=p.an,sv=[nF,shaft,roof,hotel,OX];nF=aS.nF;shaft=aS.shaft;roof=aS.roof;hotel=aS.g;OX=p.x;addFloor();aS.nF=nF;aS.shaft=shaft;aS.roof=roof;[nF,shaft,roof,hotel,OX]=sv;bF()}
 function furnishFac(s){const k=s.fac;if(s.g)s.par.remove(s.g);const g=s.g=new T.Group();g.position.set(s.cx,s.y,0);s.par.add(g);s.hit.material.opacity=0;
  const B=(w,h,d,c,x,y,z)=>box(w,h,d,M(c,.7),x,y,z,g),N=(x,z,r,c,sc)=>{const m=mkGuest();if(c)m.children[0].material=M(c,.7);m.position.set(x,0,z);m.rotation.y=r;if(sc)m.scale.setScalar(sc);g.add(m);fnpc.push(m);return m};
  B(SW-.15,.04,5.6,{rest:0x6b4a3a,spa:0xcfd8dc,gym:0x37474f,bar:0x2b1d16,chapel:0xefe6d6,conf:0x5d6d7e,shop:0xe8dcc0,kids:0xffd6e0,cafe:0xd9c3a5}[k],0,.02,-.7);
@@ -289,9 +289,23 @@ function furnishFac(s){const k=s.fac;if(s.g)s.par.remove(s.g);const g=s.g=new T.
  if(k=='shop'){[-1,1].forEach(a=>{B(.35,1.8,3.2,0x8a6a4a,a*1.1,.9,-1);for(let i=0;i<8;i++)B(.2,.25,.3,[0xe74c3c,0xf1c40f,0x2ecc71,0x3498db][i%4],a*1.1+(a<0?.2:-.2),.4+(i>>2)*.6,-2.4+(i%4)*.8)});B(1,.9,.5,0x3a2a20,0,.45,.5);N(0,1.1,Math.PI,0xc0392b);N(.2,-1,0,0x2f4a5a)}
  if(k=='kids'){B(2.2,.4,2,0xff8fab,0,.2,-1.3);for(let i=0;i<14;i++)ball(.16,M([0xe74c3c,0xf1c40f,0x2ecc71,0x3498db][i%4],.5),-.9+(i%5)*.45,.5,-2+Math.floor(i/5)*.7,g);N(-.3,-1.3,0,0xf39c12,.6).position.y=.35;N(.5,-.8,0,0x16a085,.6).position.y=.35;B(.7,.08,1.6,0xe84393,1.1,.9,.4).rotation.x=.5;N(0,1.2,Math.PI,0x2f4a5a)}
  if(k=='cafe'){B(2.6,1,.5,0x5a3b28,0,.5,-2.3);B(.5,.4,.4,0xb0b0b0,.7,1.2,-2.3);N(0,-3,0,0x6b4a2f);[-.8,.7].forEach(a=>{B(.7,.05,.7,0xf4f1ea,a,.7,.7);B(.07,.65,.07,0x555555,a,.35,.7);N(a,1.3,Math.PI,0x7a3b3b)})}}
-let RV=1,busM=null,aS=null,combo=0,totRev=0,lvl=0;const lvlOf=t=>Math.floor(Math.sqrt(t/60000));const INF=()=>1+.03*((day/40)|0);
+const PL=[-17,17,-34,34,-51,51].map(x=>({x,own:0,an:null,pad:null})),landPrice=p=>Math.round(150000*(1+.25*(Math.abs(p.x)/17-1))*landIdx/1000)*1000;
+function markLand(p){if(p.pad)scene.remove(p.pad);const g=p.pad=new T.Group();scene.add(g);const m=new T.Mesh(new T.PlaneGeometry(14,10),M(p.own?0xb9b4a6:0x6f9a4f,.95));m.rotation.x=-Math.PI/2;m.position.set(p.x,.035,0);m.receiveShadow=true;g.add(m);
+ if(!p.own){const c=document.createElement('canvas');c.width=256;c.height=96;const x=c.getContext('2d');x.fillStyle='#c0392b';x.fillRect(0,0,256,96);x.fillStyle='#fff';x.font='bold 40px sans-serif';x.textAlign='center';x.textBaseline='middle';x.fillText('FOR SALE',128,48);
+  const tx=new T.CanvasTexture(c);tx.encoding=T.sRGBEncoding;const s=new T.Mesh(new T.PlaneGeometry(2.6,.98),new T.MeshBasicMaterial({map:tx}));s.position.set(p.x,1.6,4.6);g.add(s);box(.12,1.6,.12,wood,p.x-1,.8,4.55,g);box(.12,1.6,.12,wood,p.x+1,.8,4.55,g)}}
+function landMenu(){const e=$('sheet');e.style.display='block';
+ e.innerHTML='<h3>土地・別館　地価指数 '+landIdx.toFixed(2)+'</h3><div class="r">'+PL.map((p,i)=>{const nm=(p.x<0?'左':'右')+(Math.abs(p.x)/17)+'区画',inn=PL.find(q=>q.x==p.x-Math.sign(p.x)*17);
+  if(!p.own)return (!inn||inn.an)?'<button data-lb="'+i+'">'+nm+' 土地購入 ¥'+fmt(landPrice(p))+'</button>':'<button disabled>'+nm+'（内側の区画に別館建設後に購入可）</button>';
+  if(!p.an)return '<button data-la="'+i+'">'+nm+' 別館を建設 ¥400,000</button><button data-ls="'+i+'">'+nm+' 土地を売却 ¥'+fmt(landPrice(p)*.8)+'</button>';
+  return '<button data-la="'+i+'">'+nm+' 別館 '+p.an.nF+'階 増築 ¥'+fmt(60000*(p.an.nF+1))+'</button>'}).join('')+'</div><div class="r" style="margin-top:8px"><button data-c>閉じる</button></div>';
+ e.onclick=q=>{const b=q.target.closest('button');if(!b)return;const d=b.dataset;if(d.c!==undefined){e.style.display='none';return}
+  if(d.lb!==undefined){const p=PL[d.lb],c=landPrice(p);if(money<c)return toast('資金不足');money-=c;p.own=1;markLand(p);toast('🏞 土地を取得')}
+  if(d.ls!==undefined){const p=PL[d.ls];money+=Math.round(landPrice(p)*.8);p.own=0;markLand(p);toast('💴 土地を売却')}
+  if(d.la!==undefined){const p=PL[d.la],c=p.an?60000*(p.an.nF+1):400000;if(p.an&&p.an.nF>=6)return toast('上限です');if(money<c)return toast('資金不足');money-=c;if(!p.an)buildAn(p);addAn(p);toast('🏨 別館が完成!');confetti();beep(659,.2)}
+  landMenu();hud()}}
+let RV=1,busM=null,aS=null,landIdx=1,BRoff=0,combo=0,totRev=0,lvl=0;const lvlOf=t=>Math.floor(Math.sqrt(t/60000));const INF=()=>1+.03*((day/40)|0);
 function review(s){const t=s>.8?['最高の滞在でした','スタッフが親切で感動','また泊まりたい']:s>.5?['まずまず快適','立地が良い','清潔でした']:['料金が高すぎる','部屋が古い','サービスが残念'];toast('💬 '+'★'.repeat(Math.round(1+4*s))+' 「'+rnd(t)+'」')}
-function daily2(di){specials(di);if(di%40==30)toast('🎌 大型連休スタート! 集客×1.4');RV=Math.max(.8,Math.min(1.35,RV+(Math.random()-.5)*.1));['clean','conc'].forEach(k=>{if(S[k]&&Math.random()<.02+(occ()>S[k]*6?.03:0)){S[k]--;const i=sMesh.map(m=>m.userData.k).lastIndexOf(k);if(i>=0){scene.remove(sMesh[i]);sMesh.splice(i,1)}toast('👋 '+(k=='clean'?'清掃スタッフ':'コンシェルジュ')+'が退職しました')}});slots.forEach(s=>{if(s.type&&s.cond!=null)s.cond=Math.min(1,s.cond+.01*S.clean)});for(const k in ads)if(ads[k]>0&&!--ads[k])toast('📢 '+AD[k].n+'終了');brand=Math.max(0,brand-.6);
+function daily2(di){landIdx=Math.max(.6,Math.min(2.2,landIdx*(1+(Math.random()-.48)*.03)));BRoff=Math.max(-.02,Math.min(.04,BRoff+(Math.random()-.5)*.004));specials(di);if(di%40==30)toast('🎌 大型連休スタート! 集客×1.4');RV=Math.max(.8,Math.min(1.35,RV+(Math.random()-.5)*.1));['clean','conc'].forEach(k=>{if(S[k]&&Math.random()<.02+(occ()>S[k]*6?.03:0)){S[k]--;const i=sMesh.map(m=>m.userData.k).lastIndexOf(k);if(i>=0){scene.remove(sMesh[i]);sMesh.splice(i,1)}toast('👋 '+(k=='clean'?'清掃スタッフ':'コンシェルジュ')+'が退職しました')}});slots.forEach(s=>{if(s.type&&s.cond!=null)s.cond=Math.min(1,s.cond+.01*S.clean)});for(const k in ads)if(ads[k]>0&&!--ads[k])toast('📢 '+AD[k].n+'終了');brand=Math.max(0,brand-.6);
  const r=Math.random();wx=r<.7?0:r<.9?1:2;season=((di/20)|0)%4;
  gnd.material.color.setHex([0x6aa04a,0x5d8a45,0x8a7a45,0xe8eef2][season]);green.color.setHex([0x6fbf5a,0x3f7a3a,0xc0742a,0x9aa89a][season]);adScreen();
  ACH.forEach((a,i)=>{if(!ach[i]&&a[0]()){ach[i]=1;money+=a[2];toast('🏆 実績「'+a[1]+'」 +¥'+fmt(a[2]))}})}
@@ -332,7 +346,7 @@ function buildFac(k){const g=new T.Group();scene.add(g);
   const gl=new T.Mesh(new T.PlaneGeometry(5,2.2),glass);gl.position.set(0,1.5,2.45);g.add(gl);box(5.2,.1,.1,gold,0,2.65,2.45,g);box(2.6,.8,.1,M(0x14161e),0,3.9,2.4,g);
   [-1.6,0,1.6].forEach(x=>{box(.9,.06,.9,white,x,.8,3.5,g);box(.08,.8,.08,gold,x,.4,3.5,g)})}
  else if(k=='park')mkPark(g);else if(FD[k])mkFac(k,g);
- else{g.position.set(13,0,5);box(9,.2,6,M(0xe9e2d3,.9),0,.1,0,g);
+ else{g.position.set(12,0,-11);box(9,.2,6,M(0xe9e2d3,.9),0,.1,0,g);
   const w=new T.Mesh(new T.BoxGeometry(6,.05,3.4),M(0x2aa6d6,.05,.2,{transparent:true,opacity:.8,emissive:0x0a4a6a,emissiveIntensity:.4}));w.position.set(0,.24,0);g.add(w);
   [[-3.2,2.2],[-1.8,2.2],[3.2,-2.2]].forEach(p=>box(.6,.15,1.5,white,p[0],.3,p[1],g));
   box(.08,1.8,.08,gold,-2.5,1,2.2,g);const pa=new T.Mesh(new T.ConeGeometry(.9,.4,12),M(0xd8503a));pa.position.set(-2.5,1.9,2.2);pa.castShadow=true;g.add(pa)}}
@@ -341,7 +355,7 @@ function staffMesh(k){const m=mkGuest();m.children[0].material=M(k=='clean'?0x2f
 function menu(){const e=$('sheet');e.style.display='block';
  const fb=(k,n)=>'<button data-f="'+k+'">'+n+(F[k]?'　✔ 営業中':'　建設費 ¥'+fmt(FC[k]))+'</button>';
  const sb=(k,n,d)=>'<button data-h="'+k+'">'+n+'　'+S[k]+'人（雇用 ¥10,000／日給 ¥2,500）<br><small>'+d+'</small></button>';
- e.innerHTML='<h3>施設</h3><div class="r">'+'<button data-ax>'+(aS?'🏨 別館を増築 ¥'+fmt(60000*(aS.nF+1)):'🏨 別館を建設 ¥400,000')+'</button><small>屋内施設（レストラン・スパ等）は空き区画をタップして建設</small>'+fb('park','🅿 駐車場（車で来る客を受け入れ・16台）')+fb('pool','🏊 プール（満足度+／集客+）')+Object.keys(FD).filter(k=>!IN[k]).map(k=>fb(k,FD[k].n+'（'+FD[k].d+'）')).join('')+'</div><h3 style="margin-top:10px">スタッフ</h3><div class="r">'+sb('clean','清掃スタッフ','満足度アップ（最大5人）')+sb('conc','コンシェルジュ','集客アップ（最大3人）')+'</div><div class="r" style="margin-top:8px"><button data-c>閉じる</button><button data-z>最初からやり直す</button></div>';
+ e.innerHTML='<h3>施設</h3><div class="r">'+'<small>屋内施設（レストラン・スパ等）は空き区画をタップして建設</small>'+fb('park','🅿 駐車場（車で来る客を受け入れ・16台）')+fb('pool','🏊 プール（満足度+／集客+）')+Object.keys(FD).filter(k=>!IN[k]).map(k=>fb(k,FD[k].n+'（'+FD[k].d+'）')).join('')+'</div><h3 style="margin-top:10px">スタッフ</h3><div class="r">'+sb('clean','清掃スタッフ','満足度アップ（最大5人）')+sb('conc','コンシェルジュ','集客アップ（最大3人）')+'</div><div class="r" style="margin-top:8px"><button data-c>閉じる</button><button data-z>最初からやり直す</button></div>';
  e.onclick=ev=>{const b=ev.target.closest('button');if(!b)return;const d=b.dataset;
   if(d.c!==undefined){e.style.display='none';return}
   if(d.z!==undefined){noSave=1;try{localStorage.removeItem('ght')}catch(x){}location.reload();return}
@@ -349,14 +363,14 @@ function menu(){const e=$('sheet');e.style.display='block';
   if(d.f!==undefined){const k=d.f;if(F[k])return;if(money<FC[k])return toast('資金不足');money-=FC[k];F[k]=1;buildFac(k);toast('完成しました！')}
   if(d.h!==undefined){const k=d.h;if(S[k]>=(k=='clean'?5:3))return toast('上限です');if(money<10000)return toast('資金不足');money-=10000;S[k]++;staffMesh(k)}
   menu();hud()}}
-function save(){if(noSave)return;try{localStorage.setItem('ght',JSON.stringify({money,rating,day,lastDay,mult,nF,F,S,debt,ins,LG,LP,ev,ads,brand,ach,RV,totRev,anx:aS?aS.nF:-1,s:slots.filter(s=>s.type||s.fac).map(s=>[s.ox||0,s.f,s.i,s.type,s.lvl,s.cond,s.fac])}))}catch(e){}}
+function save(){if(noSave)return;try{localStorage.setItem('ght',JSON.stringify({money,rating,day,lastDay,mult,nF,F,S,debt,ins,LG,LP,ev,ads,brand,ach,RV,totRev,land:PL.map(p=>[p.own,p.an?p.an.nF:-1]),landIdx,BRoff,s:slots.filter(s=>s.type||s.fac).map(s=>[s.ox||0,s.f,s.i,s.type,s.lvl,s.cond,s.fac])}))}catch(e){}}
 function load(){try{const d=JSON.parse(localStorage.getItem('ght'));if(!d)return false;
  ({money,rating,day,lastDay,mult}=d);debt=d.debt||0;ins=d.ins||0;LG=d.LG||LG;LP=d.LP||null;ev=d.ev||ev;ads=d.ads||{};brand=d.brand||0;ach=d.ach||{};RV=d.RV||1;totRev=d.totRev||0;lvl=lvlOf(totRev);Object.assign(F,d.F);Object.assign(S,d.S);while(nF<d.nF)addFloor();
- if(d.anx>=0){buildAnnex();while(aS.nF<d.anx)addAnnexFloor()}
+ if(d.land)d.land.forEach((v,i)=>{const p=PL[i];if(p&&v[0]){p.own=1;markLand(p);if(v[1]>=0){buildAn(p);while(p.an.nF<v[1])addAn(p)}}});else if(d.anx>=0){PL[0].own=1;markLand(PL[0]);buildAn(PL[0]);while(PL[0].an.nF<d.anx)addAn(PL[0])}landIdx=d.landIdx||1;BRoff=d.BRoff||0;
  d.s.forEach((v,i)=>{let s,t,l,c,f;if(v.length>=7){s=slots.find(x=>(x.ox||0)==v[0]&&x.f==v[1]&&x.i==v[2]);t=v[3];l=v[4];c=v[5];f=v[6]}else{s=slots[i];t=v[0];l=v[1];c=v[2]}if(s&&(t||f)){s.type=t||0;s.lvl=l||0;s.cond=c;if(f){s.fac=f;furnishFac(s)}else furnish(s)}});Object.keys(IN).forEach(k=>{if(F[k]&&!slots.some(s=>s.fac==k)){F[k]=0;money+=FC[k]}});
  Object.keys(F).forEach(k=>F[k]&&!IN[k]&&buildFac(k));['clean','conc'].forEach(k=>{for(let i=0;i<S[k];i++)staffMesh(k)});return true}catch(e){return false}}
-addEventListener('resize',resize);resize();addFloor();const ld=load();bF();hud();toast(ld?'セーブデータを読み込みました':'空き部屋をタップして客室を建てよう');
-$('bX').onclick=menu;$('bB').onclick=finance;addEventListener('pointerdown',()=>{try{ac=ac||new (window.AudioContext||window.webkitAudioContext)();ac.resume()}catch(e){}});$('bA').onclick=adMenu;setInterval(save,4000);addEventListener('visibilitychange',save);addEventListener('pagehide',save);
+addEventListener('resize',resize);resize();addFloor();PL.forEach(markLand);const ld=load();bF();hud();toast(ld?'セーブデータを読み込みました':'空き部屋をタップして客室を建てよう');
+$('bX').onclick=menu;$('bB').onclick=finance;addEventListener('pointerdown',()=>{try{ac=ac||new (window.AudioContext||window.webkitAudioContext)();ac.resume()}catch(e){}});$('bA').onclick=adMenu;$('bL').onclick=landMenu;setInterval(save,4000);addEventListener('visibilitychange',save);addEventListener('pagehide',save);
 let last=performance.now();
 (function loop(now){requestAnimationFrame(loop);const dt=Math.min((now-last)/1000,.1);last=now;const g=dt*spd;
  if(g>0){sim(g);walk(g)}rainTick(dt);popTick(dt);if(busM)busM.position.x=((busM.position.x+60-dt*6)%120+120)%120-60;car.position.x=((car.position.x+60+dt*8)%120)-60;light();setCam();hudT+=dt;if(hudT>.2){hudT=0;hud()}renderer.render(scene,cam)})(last);
