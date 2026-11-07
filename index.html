@@ -20,7 +20,7 @@ button:active{transform:scale(.96)}button.p{background:var(--ac);color:#fff}
 </style></head><body>
 <div class="bar" id="top"><div class="chip" id="cM"></div><div class="chip" id="cD"></div><div class="chip" id="cR"></div><div class="chip" id="cO"></div><div class="chip" id="cB"></div><div class="chip" id="cL"></div></div>
 <div id="toast"></div><div id="sheet"></div>
-<div class="bar" id="bot"><button class="p" id="bF"></button><button id="bP-">料金 −</button><button id="bP"></button><button id="bP+">料金 ＋</button><button id="bL">🏞 土地</button><button id="bA">📢 CM</button><button id="bB">📊 経理</button><button id="bX">🏢 施設</button><button id="bS">▶ ×1</button></div>
+<div class="bar" id="bot"><button class="p" id="bF"></button><button id="bP-">料金 −</button><button id="bP"></button><button id="bP+">料金 ＋</button><button id="bC">🎥 自由</button><button id="bL">🏞 土地</button><button id="bA">📢 CM</button><button id="bB">📊 経理</button><button id="bX">🏢 施設</button><button id="bS">▶ ×1</button></div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script>
 const T=THREE,SW=3,W=12,D=7,FH=3.2,MAXF=8,Y0=.1;
@@ -140,23 +140,24 @@ function walk(g){for(let k=guests.length-1;k>=0;k--){const q=guests[k];if(q.st==
  if(L<=st){q.m.position.copy(tg);q.i++;if(q.i>=q.p.length){if(q.st=='in')arrive(q);else{scene.remove(q.m);q.s.rsv=false;q.s.gst=null;q.s.rdy=day+.3/(1+S.clean*.6);guests.splice(k,1)}}}
  else{d.multiplyScalar(st/L);q.m.position.add(d);if(Math.hypot(d.x,d.z)>1e-4)q.m.rotation.y=Math.atan2(d.x,d.z);q.m.children[0].rotation.z=Math.sin(performance.now()/110+k)*.08}}}
 // ---- camera & input
-const C={th:.5,ph:1.32,r:32,ty:6};
-function setCam(){C.ph=Math.max(.5,Math.min(1.55,C.ph));C.r=Math.max(12,Math.min(80,C.r));C.ty=Math.max(1,Math.min((nF+1)*FH,C.ty));const sp=Math.sin(C.ph);
- cam.position.set(C.r*sp*Math.sin(C.th),C.ty+C.r*Math.cos(C.ph),C.r*sp*Math.cos(C.th));cam.lookAt(0,C.ty,0)}
-const P=new Map();let moved=0,t0=0,pd=0,pmy=0;const cv=renderer.domElement;
+const C={th:.5,ph:1.32,r:32,ty:6,tx:0,tz:0};
+function setCam(){C.ph=Math.max(.5,Math.min(1.55,C.ph));C.r=Math.max(12,Math.min(80,C.r));C.ty=Math.max(1,Math.min(45,C.ty));const sp=Math.sin(C.ph);
+ cam.position.set(C.tx+C.r*sp*Math.sin(C.th),C.ty+C.r*Math.cos(C.ph),C.tz+C.r*sp*Math.cos(C.th));cam.lookAt(C.tx,C.ty,C.tz);if(shake>0){cam.position.x+=(Math.random()-.5)*shake;cam.position.y+=(Math.random()-.5)*shake;shake=Math.max(0,shake-.015)}}
+const P=new Map();let moved=0,t0=0,pd=0,pmy=0,pmx=0;const cv=renderer.domElement;
 cv.addEventListener('pointerdown',e=>{cv.setPointerCapture(e.pointerId);P.set(e.pointerId,e);if(P.size==1){moved=0;t0=performance.now()}
- if(P.size==2){const a=[...P.values()];pd=Math.hypot(a[0].clientX-a[1].clientX,a[0].clientY-a[1].clientY);pmy=(a[0].clientY+a[1].clientY)/2}});
+ if(P.size==2){const a=[...P.values()];pd=Math.hypot(a[0].clientX-a[1].clientX,a[0].clientY-a[1].clientY);pmy=(a[0].clientY+a[1].clientY)/2;pmx=(a[0].clientX+a[1].clientX)/2}});
 cv.addEventListener('pointermove',e=>{if(!P.has(e.pointerId))return;const o=P.get(e.pointerId);
- if(P.size==1){const dx=e.clientX-o.clientX,dy=e.clientY-o.clientY;moved+=Math.abs(dx)+Math.abs(dy);C.th-=dx*.006;C.ph-=dy*.005}
+ if(P.size==1){const dx=e.clientX-o.clientX,dy=e.clientY-o.clientY;moved+=Math.abs(dx)+Math.abs(dy);if(moved>10&&(G||camMode)){G=null;camMode=0;$('bC').textContent='🎥 自由'}C.th-=dx*.006;C.ph-=dy*.005}
  P.set(e.pointerId,e);
  if(P.size==2){moved=99;const a=[...P.values()],d=Math.hypot(a[0].clientX-a[1].clientX,a[0].clientY-a[1].clientY),my=(a[0].clientY+a[1].clientY)/2;
-  if(pd)C.r*=pd/d;C.ty+=(my-pmy)*.03*C.r/30;pd=d;pmy=my}});
+  if(pd)C.r*=pd/d;C.ty+=(my-pmy)*.03*C.r/30;const mx=(a[0].clientX+a[1].clientX)/2,kx=(mx-pmx)*.03*C.r/30;C.tx-=kx*Math.cos(C.th);C.tz+=kx*Math.sin(C.th);pd=d;pmy=my;pmx=mx;G=null}});
 const up=e=>{if(P.size==1&&moved<10&&performance.now()-t0<500)pick(e);P.delete(e.pointerId);pd=0};
 cv.addEventListener('pointerup',up);cv.addEventListener('pointercancel',e=>{P.delete(e.pointerId)});
 cv.addEventListener('wheel',e=>{C.r*=1+e.deltaY*.001},{passive:true});
 const ray=new T.Raycaster();
 function pick(e){ray.setFromCamera({x:e.clientX/innerWidth*2-1,y:-(e.clientY/innerHeight)*2+1},cam);
- const h=ray.intersectObjects(slots.map(s=>s.hit))[0];if(h)sheet(h.object.userData.s);else $('sheet').style.display='none'}
+ const gh=ray.intersectObjects(guests.map(q=>q.m),true)[0];if(gh){const q=guests.find(x=>{let o=gh.object;while(o){if(o===x.m)return true;o=o.parent}return false});if(q){camQ=q;camMode=2;G=null;$('bC').textContent='🎥 追跡';pop(q.m.position,(q.s.seg?q.s.seg.n:'')+'のお客さん');return}}
+ const h=ray.intersectObjects(slots.map(s=>s.hit))[0];if(h){const s0=h.object.userData.s;G={x:(s0.ox||0)+s0.cx,y:s0.y+1.2,z:0,r:14};camMode=0;sheet(s0)}else $('sheet').style.display='none'}
 function sheet(s){const e=$('sheet');e.style.display='block';let h='';
  if(s.fac){h='<h3>'+s.f+'階 '+FN(s.fac)+'</h3><div class="r"><button data-x>閉業して50%返金</button></div>'}else if(!s.type){h='<h3>'+s.f+'階 '+(s.i+1)+'号室を建設</h3><div class="r">'+[1,2,3].map(t=>'<button data-b="'+t+'">'+NAME[t]+'　建設費 ¥'+fmt(COST[t])+'<br><small>1泊 ¥'+fmt(BASE[t])+'〜</small></button>').join('')+Object.keys(IN).filter(k=>!F[k]).map(k=>'<button data-g="'+k+'">'+FN(k)+'　¥'+fmt(FC[k])+'</button>').join('')+'</div>'}
  else{const uc=COST[s.type]*.6*s.lvl;h='<h3>'+s.f+'階 '+NAME[s.type]+'　Lv.'+s.lvl+'</h3><div class="r">'+(s.lvl<3?'<button data-u>改装アップグレード ¥'+fmt(uc)+'<br><small>料金+35% / 満足度アップ</small></button>':'')+
@@ -174,7 +175,7 @@ $('bS').onclick=()=>{const L=[0,1,2,4];spd=L[(L.indexOf(spd)+1)%4];$('bS').textC
 // ---- day/night
 const cG=new T.Color(0x6b7380),cD=new T.Color(0x9fd0ff),cN=new T.Color(0x070b1e),cS=new T.Color(0xff9a5a),sky=new T.Color();
 function light(){const hr=(day%1)*24,a=(hr-6)/12*Math.PI,el=Math.sin(a),d=Math.max(0,Math.min(1,el*1.6+.25));
- sun.position.set(-Math.cos(a)*45,Math.max(el,.06)*45+4,22);sun.target.position.set(0,6,0);sun.intensity=d*2.4*(1-.35*wx);hemi.intensity=.12+.75*d;
+ sun.position.set(-Math.cos(a)*45,Math.max(el,.06)*45+4,22);sun.target.position.set(0,6,0);sun.intensity=d*2.4*(1-.35*wx);stars.material.opacity=Math.max(0,.9-d*2);stars.visible=d<.45;hemi.intensity=.12+.75*d;
  sky.copy(cN).lerp(cD,d);if(el>0&&el<.3)sky.lerp(cS,(1-el/.3)*.45);if(wx)sky.lerp(cG,.3*wx*Math.max(d,.2));scene.background=sky;scene.fog.color.copy(sky);
  sun.color.set(0xfff1d6).lerp(cS,Math.max(0,1-el*2.5)*.6);glass.emissiveIntensity=(1-d)*1.3;lamp.emissiveIntensity=(1-d)*2.5}
 function resize(){renderer.setSize(innerWidth,innerHeight);cam.aspect=innerWidth/innerHeight;cam.updateProjectionMatrix()}
@@ -197,7 +198,7 @@ function mkPark(g){g.position.set(30,0,-13);box(14,.08,18,M(0x3a3d44,.95),0,.04,
 const RN=900,rp=new Float32Array(RN*3);for(let i=0;i<RN;i++){rp[i*3]=(Math.random()-.5)*60;rp[i*3+1]=Math.random()*30;rp[i*3+2]=(Math.random()-.5)*60}
 const rg=new T.BufferGeometry();rg.setAttribute('position',new T.BufferAttribute(rp,3));
 const rain=new T.Points(rg,new T.PointsMaterial({color:0xaac8ff,size:.14,transparent:true,opacity:.7}));rain.visible=false;rain.frustumCulled=false;scene.add(rain);
-function rainTick(dt){rain.visible=wx==2;if(!rain.visible)return;for(let i=0;i<RN;i++){rp[i*3+1]-=dt*18;if(rp[i*3+1]<0)rp[i*3+1]=30}rg.attributes.position.needsUpdate=true}
+function rainTick(dt){const sn=season==3&&wx>0;rain.visible=wx==2||sn;if(!rain.visible)return;rain.material.color.setHex(sn?0xffffff:0xaac8ff);for(let i=0;i<RN;i++){rp[i*3+1]-=dt*(sn?3:18);if(rp[i*3+1]<0)rp[i*3+1]=30}rg.attributes.position.needsUpdate=true}
 let adc,adt,adm;
 function adScreen(){const list=Object.keys(ads).filter(k=>ads[k]>0);if(!list.length&&!adm)return;
  if(!adm){const g=new T.Group();g.position.set(-24,0,10.8);scene.add(g);box(.3,5,.3,gold,-4,2.5,0,g);box(.3,5,.3,gold,4,2.5,0,g);
@@ -224,7 +225,7 @@ const FD={spa:{n:'♨ 大浴場・スパ',d:'満足度+・集客+・宿泊売上
  cafe:{n:'☕ カフェ',d:'宿泊ごと売上',c:80000,sat:.02,dem:.03,rev:350,up:700}};
 Object.keys(FD).forEach(k=>{F[k]=0;FC[k]=FD[k].c});
 const sumF=p=>Object.keys(FD).reduce((a,k)=>a+(F[k]?FD[k][p]:0),0),fxS=()=>sumF('sat'),fxD=()=>sumF('dem'),fxR=()=>sumF('rev'),fxU=()=>sumF('up');
-function specials(di){if(Math.random()<.01){const f=ins?20000:150000;money-=f;LG.evt+=f;toast('🌋 地震発生 損害 ¥'+fmt(f)+(ins?'（保険適用）':''))}if(occ()>6&&Math.random()<.04){money-=30000;LG.evt+=30000;toast('🔊 近隣から騒音苦情 対応費 ¥30,000')}if(F.chapel&&Math.random()<.2){const b=90000+(Math.random()*110000|0);money+=b;LG.rev+=b;toast('💒 結婚式の披露宴 +¥'+fmt(b))}
+function specials(di){if(Math.random()<.01){shake=1.2;const f=ins?20000:150000;money-=f;LG.evt+=f;toast('🌋 地震発生 損害 ¥'+fmt(f)+(ins?'（保険適用）':''))}if(occ()>6&&Math.random()<.04){money-=30000;LG.evt+=30000;toast('🔊 近隣から騒音苦情 対応費 ¥30,000')}if(F.chapel&&Math.random()<.2){const b=90000+(Math.random()*110000|0);money+=b;LG.rev+=b;toast('💒 結婚式の披露宴 +¥'+fmt(b))}
  if(F.conf&&di%7<5&&Math.random()<.4){const b=40000+(Math.random()*50000|0);money+=b;LG.rev+=b;toast('📊 会議・研修 +¥'+fmt(b))}}
 function mkFac(k,g){const wt=M(0x6ac3d8,.1,.2,{transparent:true,opacity:.8,emissive:0x0a4a5a,emissiveIntensity:.4,depthWrite:false});
  if(k=='bus'){busM=new T.Group();box(7,1.8,2.2,M(0x2a7fd4,.4,.3),0,1.4,0,busM);box(6.4,.7,2.25,M(0x1a2230,.2,.4),0,1.8,0,busM);[[-2.2,1],[2.2,1],[-2.2,-1],[2.2,-1]].forEach(p=>{const w=new T.Mesh(new T.CylinderGeometry(.45,.45,.3,14),M(0x111111));w.rotation.x=Math.PI/2;w.position.set(p[0],.45,p[1]);busM.add(w)});busM.position.set(10,0,17.7);scene.add(busM);return}
@@ -293,6 +294,14 @@ const PL=[-17,17,-34,34,-51,51].map(x=>({x,own:0,an:null,pad:null})),landPrice=p
 function markLand(p){if(p.pad)scene.remove(p.pad);const g=p.pad=new T.Group();scene.add(g);const m=new T.Mesh(new T.PlaneGeometry(14,10),M(p.own?0xb9b4a6:0x6f9a4f,.95));m.rotation.x=-Math.PI/2;m.position.set(p.x,.035,0);m.receiveShadow=true;g.add(m);
  if(!p.own){const c=document.createElement('canvas');c.width=256;c.height=96;const x=c.getContext('2d');x.fillStyle='#c0392b';x.fillRect(0,0,256,96);x.fillStyle='#fff';x.font='bold 40px sans-serif';x.textAlign='center';x.textBaseline='middle';x.fillText('FOR SALE',128,48);
   const tx=new T.CanvasTexture(c);tx.encoding=T.sRGBEncoding;const s=new T.Mesh(new T.PlaneGeometry(2.6,.98),new T.MeshBasicMaterial({map:tx}));s.position.set(p.x,1.6,4.6);g.add(s);box(.12,1.6,.12,wood,p.x-1,.8,4.55,g);box(.12,1.6,.12,wood,p.x+1,.8,4.55,g)}}
+let camMode=0,camT=0,camQ=null,G=null,shake=0;
+function camTick(dt){
+ if(G){const k=1-Math.pow(.001,dt);C.tx+=(G.x-C.tx)*k;C.ty+=(G.y-C.ty)*k;C.tz+=(G.z-C.tz)*k;C.r+=(G.r-C.r)*k}
+ if(camMode==1)C.th+=dt*.18;
+ if(camMode==2){if(!camQ||!guests.includes(camQ))camQ=guests.find(x=>x.st!='stay')||guests[0];if(camQ){const p=camQ.m.position,k=1-Math.pow(.02,dt);C.tx+=(p.x-C.tx)*k;C.ty+=(p.y+1-C.ty)*k;C.tz+=(p.z-C.tz)*k;C.r+=(9-C.r)*k;C.ph+=(1.3-C.ph)*k;C.th+=dt*.1}}
+ if(camMode==3){camT+=dt;C.th+=dt*.22;C.r=34+10*Math.sin(camT*.4);C.ph=1.15+.25*Math.sin(camT*.25);C.tx*=.98;C.tz*=.98;C.ty+=(12-C.ty)*.02}}
+const stp=new Float32Array(600);for(let i=0;i<200;i++){const u=Math.random()*Math.PI*2,v=Math.random()*1.2+.1;stp[i*3]=140*Math.cos(u)*Math.sin(v);stp[i*3+1]=140*Math.cos(v);stp[i*3+2]=140*Math.sin(u)*Math.sin(v)}
+const stg=new T.BufferGeometry();stg.setAttribute('position',new T.BufferAttribute(stp,3));const stars=new T.Points(stg,new T.PointsMaterial({color:0xffffff,size:.9,transparent:true,fog:false}));stars.frustumCulled=false;scene.add(stars);
 function spark(){if(!hist.length)return'–';const mx=Math.max(...hist.map(Math.abs),1);return hist.map(v=>v<0?'▾':'▁▂▃▄▅▆▇█'[Math.min(7,Math.floor(v/mx*7.99))]).join('')}
 function landMenu(){const e=$('sheet');e.style.display='block';
  e.innerHTML='<h3>土地・別館　地価指数 '+landIdx.toFixed(2)+'</h3><div class="r">'+PL.map((p,i)=>{const nm=(p.x<0?'左':'右')+(Math.abs(p.x)/17)+'区画',inn=PL.find(q=>q.x==p.x-Math.sign(p.x)*17);
@@ -373,8 +382,8 @@ function load(){try{const d=JSON.parse(localStorage.getItem('ght'));if(!d)return
  d.s.forEach((v,i)=>{let s,t,l,c,f;if(v.length>=7){s=slots.find(x=>(x.ox||0)==v[0]&&x.f==v[1]&&x.i==v[2]);t=v[3];l=v[4];c=v[5];f=v[6]}else{s=slots[i];t=v[0];l=v[1];c=v[2]}if(s&&(t||f)){s.type=t||0;s.lvl=l||0;s.cond=c;if(f){s.fac=f;furnishFac(s)}else furnish(s)}});Object.keys(IN).forEach(k=>{if(F[k]&&!slots.some(s=>s.fac==k)){F[k]=0;money+=FC[k]}});
  Object.keys(F).forEach(k=>F[k]&&!IN[k]&&buildFac(k));['clean','conc'].forEach(k=>{for(let i=0;i<S[k];i++)staffMesh(k)});return true}catch(e){return false}}
 addEventListener('resize',resize);resize();addFloor();PL.forEach(markLand);const ld=load();bF();hud();toast(ld?'セーブデータを読み込みました':'空き部屋をタップして客室を建てよう');
-$('bX').onclick=menu;$('bB').onclick=finance;addEventListener('pointerdown',()=>{try{ac=ac||new (window.AudioContext||window.webkitAudioContext)();ac.resume()}catch(e){}});$('bA').onclick=adMenu;$('bL').onclick=landMenu;setInterval(save,4000);addEventListener('visibilitychange',save);addEventListener('pagehide',save);
+$('bX').onclick=menu;$('bB').onclick=finance;addEventListener('pointerdown',()=>{try{ac=ac||new (window.AudioContext||window.webkitAudioContext)();ac.resume()}catch(e){}});$('bA').onclick=adMenu;$('bL').onclick=landMenu;$('bC').onclick=()=>{camMode=(camMode+1)%4;G=null;camQ=null;if(!camMode){C.tx=0;C.tz=0}$('bC').textContent='🎥 '+['自由','オービット','追跡','ドローン'][camMode]};setInterval(save,4000);addEventListener('visibilitychange',save);addEventListener('pagehide',save);
 let last=performance.now();
 (function loop(now){requestAnimationFrame(loop);const dt=Math.min((now-last)/1000,.1);last=now;const g=dt*spd;
- if(g>0){sim(g);walk(g)}rainTick(dt);popTick(dt);if(busM)busM.position.x=((busM.position.x+60-dt*6)%120+120)%120-60;car.position.x=((car.position.x+60+dt*8)%120)-60;light();setCam();hudT+=dt;if(hudT>.2){hudT=0;hud()}renderer.render(scene,cam)})(last);
+ if(g>0){sim(g);walk(g)}rainTick(dt);popTick(dt);if(busM)busM.position.x=((busM.position.x+60-dt*6)%120+120)%120-60;car.position.x=((car.position.x+60+dt*8)%120)-60;light();camTick(dt);setCam();hudT+=dt;if(hudT>.2){hudT=0;hud()}renderer.render(scene,cam)})(last);
 </script></body></html>
